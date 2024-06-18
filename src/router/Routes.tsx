@@ -1,13 +1,11 @@
 import { RouteObject, createBrowserRouter } from "react-router-dom"
-import App from "../App"
 import Main from "../pages/Main"
 
 export const routes: RouteObject[] = [
 	{
 		path: '/',
-		element: <App />,
+		element: <Main />,
     children: [
-      {path: 'main', element: <Main />},
     ]
 	}
 ]
