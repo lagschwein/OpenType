@@ -2,10 +2,10 @@ import { Input, Navbar, NavbarBrand, NavbarContent } from "@nextui-org/react";
 
 export default function NavBar() {
   return (
-    <Navbar isBordered>
+    <Navbar isBordered className="absolute">
       <NavbarContent justify="start">
         <NavbarBrand className="mr-4">
-          <img src="/vite.svg" alt="Vite Logo" />
+          <h1 className="logo">Open Type </h1>
         </NavbarBrand>
       </NavbarContent>
       <NavbarContent as="div" className="items-center" justify="end">
