@@ -18,7 +18,17 @@
 }
 
 .letter {
-  font-size: large;
+  font-family: 'consolas';
+  font-size: 1em;
+  line-height: 1em;
+  display: inline;
+}
+
+.word {
+  font-size: 1em;
+  display: inline;
+  line-height: 1em;
+  margin: 2px;
 }
 
 .incorrect {

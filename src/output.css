@@ -748,10 +748,6 @@ video {
   margin: 0px;
 }
 
-.m-0\.5 {
-  margin: 0.125rem;
-}
-
 .m-4 {
   margin: 1rem;
 }
@@ -909,10 +905,6 @@ video {
   display: inline-block;
 }
 
-.inline {
-  display: inline;
-}
-
 .flex {
   display: flex;
 }
@@ -1041,6 +1033,10 @@ video {
   height: var(--nextui-divider-weight);
 }
 
+.h-dvh {
+  height: 100dvh;
+}
+
 .h-fit {
   height: -moz-fit-content;
   height: fit-content;
@@ -1056,18 +1052,6 @@ video {
 
 .h-screen {
   height: 100vh;
-}
-
-.h-svh {
-  height: 100svh;
-}
-
-.h-lvh {
-  height: 100lvh;
-}
-
-.h-dvh {
-  height: 100dvh;
 }
 
 .max-h-64 {
@@ -1990,6 +1974,10 @@ video {
   border-bottom-width: 1px;
 }
 
+.border-b-2 {
+  border-bottom-width: 2px;
+}
+
 .border-b-medium {
   border-bottom-width: var(--nextui-border-width-medium);
 }
@@ -2049,6 +2037,11 @@ video {
 .border-primary {
   --tw-border-opacity: 1;
   border-color: hsl(var(--nextui-primary) / var(--nextui-primary-opacity, var(--tw-border-opacity)));
+}
+
+.border-red-500 {
+  --tw-border-opacity: 1;
+  border-color: rgb(239 68 68 / var(--tw-border-opacity));
 }
 
 .border-secondary {
@@ -2632,11 +2625,6 @@ video {
   line-height: 1.75rem;
 }
 
-.text-3xl {
-  font-size: 1.875rem;
-  line-height: 2.25rem;
-}
-
 .font-medium {
   font-weight: 500;
 }
@@ -2647,10 +2635,6 @@ video {
 
 .font-semibold {
   font-weight: 600;
-}
-
-.font-bold {
-  font-weight: 700;
 }
 
 .tabular-nums {
@@ -4607,10 +4591,6 @@ video {
   width: 100%;
 }
 
-.hover\:invisible:hover {
-  visibility: hidden;
-}
-
 .hover\:-translate-x-0:hover {
   --tw-translate-x: -0px;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
@@ -4818,10 +4798,6 @@ video {
   background-color: hsl(var(--nextui-default-100) / var(--nextui-default-100-opacity, var(--tw-bg-opacity)));
 }
 
-.focus\:invisible:focus {
-  visibility: hidden;
-}
-
 .focus\:bg-danger-400\/50:focus {
   background-color: hsl(var(--nextui-danger-400) / 0.5);
 }
@@ -4875,10 +4851,6 @@ video {
 
 .focus-visible\:outline-focus:focus-visible {
   outline-color: hsl(var(--nextui-focus) / var(--nextui-focus-opacity, 1));
-}
-
-.active\:invisible:active {
-  visibility: hidden;
 }
 
 .active\:bg-default-200:active {
