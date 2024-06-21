@@ -8,8 +8,8 @@
 .caret {
   width: 2px;
   height: 1.5rem;
-  color: #fff;
   background-color: #fff;
+  z-index: 40;
 }
 
 .logo {
