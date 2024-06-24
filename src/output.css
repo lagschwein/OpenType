@@ -708,10 +708,6 @@ video {
   top: var(--navbar-height);
 }
 
-.right-0 {
-  right: 0px;
-}
-
 .-z-30 {
   z-index: -30;
 }
@@ -993,6 +989,10 @@ video {
   height: 1.25rem;
 }
 
+.h-5\/6 {
+  height: 83.333333%;
+}
+
 .h-6 {
   height: 1.5rem;
 }
@@ -1146,10 +1146,6 @@ video {
   width: 0.625rem;
 }
 
-.w-2\/3 {
-  width: 66.666667%;
-}
-
 .w-3 {
   width: 0.75rem;
 }
@@ -1164,6 +1160,10 @@ video {
 
 .w-5 {
   width: 1.25rem;
+}
+
+.w-5\/6 {
+  width: 83.333333%;
 }
 
 .w-6 {
@@ -1332,6 +1332,10 @@ video {
 
 .max-w-\[270px\] {
   max-width: 270px;
+}
+
+.max-w-\[300px\] {
+  max-width: 300px;
 }
 
 .max-w-\[640px\] {
@@ -1628,6 +1632,10 @@ video {
   -webkit-appearance: none;
      -moz-appearance: none;
           appearance: none;
+}
+
+.grid-cols-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .grid-cols-4 {
@@ -1990,10 +1998,6 @@ video {
   border-bottom-width: var(--nextui-border-width-medium);
 }
 
-.border-r {
-  border-right-width: 1px;
-}
-
 .border-solid {
   border-style: solid;
 }
@@ -2009,6 +2013,11 @@ video {
 .\!border-danger {
   --tw-border-opacity: 1 !important;
   border-color: hsl(var(--nextui-danger) / var(--nextui-danger-opacity, var(--tw-border-opacity))) !important;
+}
+
+.\!border-red-500 {
+  --tw-border-opacity: 1 !important;
+  border-color: rgb(239 68 68 / var(--tw-border-opacity)) !important;
 }
 
 .border-background {
@@ -2051,11 +2060,6 @@ video {
   border-color: hsl(var(--nextui-primary) / var(--nextui-primary-opacity, var(--tw-border-opacity)));
 }
 
-.border-red-500 {
-  --tw-border-opacity: 1;
-  border-color: rgb(239 68 68 / var(--tw-border-opacity));
-}
-
 .border-secondary {
   --tw-border-opacity: 1;
   border-color: hsl(var(--nextui-secondary) / var(--nextui-secondary-opacity, var(--tw-border-opacity)));
@@ -2073,11 +2077,6 @@ video {
 .border-warning {
   --tw-border-opacity: 1;
   border-color: hsl(var(--nextui-warning) / var(--nextui-warning-opacity, var(--tw-border-opacity)));
-}
-
-.\!border-red-500 {
-  --tw-border-opacity: 1 !important;
-  border-color: rgb(239 68 68 / var(--tw-border-opacity)) !important;
 }
 
 .border-x-transparent {
@@ -2353,11 +2352,6 @@ video {
 .bg-white {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
-}
-
-.bg-black {
-  --tw-bg-opacity: 1;
-  background-color: rgb(0 0 0 / var(--tw-bg-opacity));
 }
 
 .bg-stripe-gradient {
@@ -2750,11 +2744,6 @@ video {
   color: hsl(var(--nextui-foreground) / 0.5);
 }
 
-.text-gray-500 {
-  --tw-text-opacity: 1;
-  color: rgb(107 114 128 / var(--tw-text-opacity));
-}
-
 .text-inherit {
   color: inherit;
 }
@@ -2767,6 +2756,11 @@ video {
 .text-primary-300 {
   --tw-text-opacity: 1;
   color: hsl(var(--nextui-primary-300) / var(--nextui-primary-300-opacity, var(--tw-text-opacity)));
+}
+
+.text-primary-800 {
+  --tw-text-opacity: 1;
+  color: hsl(var(--nextui-primary-800) / var(--nextui-primary-800-opacity, var(--tw-text-opacity)));
 }
 
 .text-primary-foreground {
@@ -2786,6 +2780,11 @@ video {
 .text-secondary-300 {
   --tw-text-opacity: 1;
   color: hsl(var(--nextui-secondary-300) / var(--nextui-secondary-300-opacity, var(--tw-text-opacity)));
+}
+
+.text-secondary-700 {
+  --tw-text-opacity: 1;
+  color: hsl(var(--nextui-secondary-700) / var(--nextui-secondary-700-opacity, var(--tw-text-opacity)));
 }
 
 .text-secondary-foreground {
@@ -3249,7 +3248,7 @@ video {
   will-change: transform;
 }
 
-.light,[data-theme="light"] {
+:root,.light,[data-theme="light"] {
   color-scheme: light;
   --nextui-background: 0 0% 100%;
   --nextui-foreground-50: 0 0% 98.04%;
@@ -3369,7 +3368,7 @@ video {
   --nextui-hover-opacity: .8;
 }
 
-:root,.dark,[data-theme="dark"] {
+.dark,[data-theme="dark"] {
   color-scheme: dark;
   --nextui-background: 0 0% 0%;
   --nextui-foreground-50: 240 5.88% 10%;
@@ -3487,6 +3486,96 @@ video {
   --nextui-box-shadow-medium: 0px 0px 15px 0px rgb(0 0 0 / 0.06), 0px 2px 30px 0px rgb(0 0 0 / 0.22), inset 0px 0px 1px 0px rgb(255 255 255 / 0.15);
   --nextui-box-shadow-large: 0px 0px 30px 0px rgb(0 0 0 / 0.07), 0px 30px 60px 0px rgb(0 0 0 / 0.26), inset 0px 0px 1px 0px rgb(255 255 255 / 0.15);
   --nextui-hover-opacity: .9;
+}
+
+.catppuccin-latte,[data-theme="catppuccin-latte"] {
+  --nextui-background: 220 23.08% 94.9%;
+  --nextui-foreground: 222.86 15.91% 82.75%;
+  --nextui-divider: 0 0% 6.67%;
+  --nextui-divider-opacity: 0.15;
+  --nextui-focus: 10.800000000000011 58.82% 66.67%;
+  --nextui-overlay: 0 0% 0%;
+  --nextui-content1: 0 0% 100%;
+  --nextui-content1-foreground: 201.81999999999994 24.44% 8.82%;
+  --nextui-content2: 240 4.76% 95.88%;
+  --nextui-content2-foreground: 240 3.7% 15.88%;
+  --nextui-content3: 240 5.88% 90%;
+  --nextui-content3-foreground: 240 5.26% 26.08%;
+  --nextui-content4: 240 4.88% 83.92%;
+  --nextui-content4-foreground: 240 5.2% 33.92%;
+  --nextui-default-50: 0 0% 98.04%;
+  --nextui-default-100: 240 4.76% 95.88%;
+  --nextui-default-200: 240 5.88% 90%;
+  --nextui-default-300: 240 4.88% 83.92%;
+  --nextui-default-400: 240 5.03% 64.9%;
+  --nextui-default-500: 240 3.83% 46.08%;
+  --nextui-default-600: 240 5.2% 33.92%;
+  --nextui-default-700: 240 5.26% 26.08%;
+  --nextui-default-800: 240 3.7% 15.88%;
+  --nextui-default-900: 240 5.88% 10%;
+  --nextui-default-foreground: 0 0% 0%;
+  --nextui-default: 240 4.88% 83.92%;
+  --nextui-primary-50: 212.5 92.31% 94.9%;
+  --nextui-primary-100: 231.43000000000006 46.67% 94.12%;
+  --nextui-primary-200: 231.11 47.37% 88.82%;
+  --nextui-primary-300: 233.14 28% 75.49%;
+  --nextui-primary-400: 232.94000000000005 15.74% 57.65%;
+  --nextui-primary-500: 233.78999999999996 16.02% 35.49%;
+  --nextui-primary-600: 234.86 24.14% 28.43%;
+  --nextui-primary-700: 235.14 32.74% 22.16%;
+  --nextui-primary-800: 236.66999999999996 42.86% 16.47%;
+  --nextui-primary-900: 236.66999999999996 56.25% 12.55%;
+  --nextui-primary-foreground: 316.03 73.42% 69.02%;
+  --nextui-primary: 233.78999999999996 16.02% 35.49%;
+  --nextui-secondary-50: 270 61.54% 94.9%;
+  --nextui-secondary-100: 276.9200000000001 95.12% 91.96%;
+  --nextui-secondary-200: 273.51 95.06% 84.12%;
+  --nextui-secondary-300: 271.29999999999995 92% 75.49%;
+  --nextui-secondary-400: 268.71000000000004 87.5% 68.63%;
+  --nextui-secondary-500: 266.03999999999996 85.05% 58.04%;
+  --nextui-secondary-600: 263.4100000000001 66.67% 48.24%;
+  --nextui-secondary-700: 260.8299999999999 72% 39.22%;
+  --nextui-secondary-800: 258 76.92% 30.59%;
+  --nextui-secondary-900: 255.58000000000004 83.87% 24.31%;
+  --nextui-secondary-foreground: 0 0% 100%;
+  --nextui-secondary: 270 66.67% 47.06%;
+  --nextui-success-50: 146.66999999999996 64.29% 94.51%;
+  --nextui-success-100: 145.71000000000004 61.4% 88.82%;
+  --nextui-success-200: 146.2 61.74% 77.45%;
+  --nextui-success-300: 145.78999999999996 62.57% 66.47%;
+  --nextui-success-400: 146.01 62.45% 55.1%;
+  --nextui-success-500: 145.96000000000004 79.46% 43.92%;
+  --nextui-success-600: 146.01 79.89% 35.1%;
+  --nextui-success-700: 145.78999999999996 79.26% 26.47%;
+  --nextui-success-800: 146.2 79.78% 17.45%;
+  --nextui-success-900: 145.71000000000004 77.78% 8.82%;
+  --nextui-success-foreground: 0 0% 0%;
+  --nextui-success: 145.96000000000004 79.46% 43.92%;
+  --nextui-warning-50: 54.55000000000001 91.67% 95.29%;
+  --nextui-warning-100: 37.139999999999986 91.3% 90.98%;
+  --nextui-warning-200: 37.139999999999986 91.3% 81.96%;
+  --nextui-warning-300: 36.95999999999998 91.24% 73.14%;
+  --nextui-warning-400: 37.00999999999999 91.26% 64.12%;
+  --nextui-warning-500: 37.02999999999997 91.27% 55.1%;
+  --nextui-warning-600: 37.00999999999999 74.22% 44.12%;
+  --nextui-warning-700: 36.95999999999998 73.96% 33.14%;
+  --nextui-warning-800: 37.139999999999986 75% 21.96%;
+  --nextui-warning-900: 37.139999999999986 75% 10.98%;
+  --nextui-warning-foreground: 0 0% 0%;
+  --nextui-warning: 37.02999999999997 91.27% 55.1%;
+  --nextui-danger-50: 339.13 92% 95.1%;
+  --nextui-danger-100: 10.20999999999998 88.68% 89.61%;
+  --nextui-danger-200: 4.519999999999982 90.29% 79.8%;
+  --nextui-danger-300: 358.22 82.82% 68.04%;
+  --nextui-danger-400: 352.78 73.83% 58.04%;
+  --nextui-danger-500: 347.0799999999999 86.67% 44.12%;
+  --nextui-danger-600: 341.28999999999996 89.47% 37.25%;
+  --nextui-danger-700: 335.8299999999999 91.14% 30.98%;
+  --nextui-danger-800: 329.74 93.6% 24.51%;
+  --nextui-danger-900: 323.88 96.08% 20%;
+  --nextui-danger-foreground: 347.0799999999999 86.67% 44.12%;
+  --nextui-danger: 347.0799999999999 86.67% 44.12%;
+  --nextui-content: 227.23000000000002 70.15% 86.86%;
 }
 
 .leading-inherit {
@@ -7529,11 +7618,6 @@ video {
   background-color: hsl(var(--nextui-default-500) / 0.2);
 }
 
-.dark\:bg-gray-800:is(.dark *) {
-  --tw-bg-opacity: 1;
-  background-color: rgb(31 41 55 / var(--tw-bg-opacity));
-}
-
 .dark\:bg-transparent:is(.dark *) {
   background-color: transparent;
 }
@@ -7541,11 +7625,6 @@ video {
 .dark\:text-danger-500:is(.dark *) {
   --tw-text-opacity: 1;
   color: hsl(var(--nextui-danger-500) / var(--nextui-danger-500-opacity, var(--tw-text-opacity)));
-}
-
-.dark\:text-gray-400:is(.dark *) {
-  --tw-text-opacity: 1;
-  color: rgb(156 163 175 / var(--tw-text-opacity));
 }
 
 .dark\:text-success:is(.dark *) {

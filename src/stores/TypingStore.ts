@@ -3,7 +3,8 @@ import StopWatch from "../util/Timer";
 
 export default class TypingStore {
   typedText: string = "";
-  paragraph: string = "GitHub Copilot, an AI programming assistant, helps developers by providing suggestions for code completion, generating unit tests, proposing fixes for code issues, explaining how selected code works, creating new Jupyter Notebooks, finding relevant code, and answering general programming questions, thereby enhancing productivity and code quality.";
+  // paragraph: string = "GitHub Copilot, an AI programming assistant, helps developers by providing suggestions for code completion, generating unit tests, proposing fixes for code issues, explaining how selected code works, creating new Jupyter Notebooks, finding relevant code, and answering general programming questions, thereby enhancing productivity and code quality.";
+  paragraph: string = "This is a typing test.";
   key: string = "";
   currentWordIndex: number = 0;
   currentLetterIndex: number = 0;

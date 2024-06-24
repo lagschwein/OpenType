@@ -4,7 +4,7 @@ export default function NavBar() {
   return (
     <Navbar isBordered className="absolute">
       <NavbarContent justify="start">
-        <NavbarBrand className="mr-4">
+        <NavbarBrand className="mr-4 text-secondary-700">
           <h1 className="logo">Open Type </h1>
         </NavbarBrand>
       </NavbarContent>

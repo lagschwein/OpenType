@@ -46,7 +46,7 @@ const Letter = observer(({l, id, ...props}: LetterProps)  => {
   }, [currentLetterIndex, currentWordIndex, key])
 
   return (
-    <div id={id} className={"letter " + correct}>{l}</div>
+    <div id={id} className={"bg-transparent text-primary-800 letter " + correct}>{l}</div>
   )
 })
 

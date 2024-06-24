@@ -7,12 +7,10 @@ import { router } from './router/Routes';
 function App() {
 
   return (
-    <NextUIProvider >
-      <main className="dark text-foreground bg-background">
-        <NavBar />
-        <RouterProvider router={router} />
-      </main>
-    </NextUIProvider>
+    <>
+      <NavBar />
+      <RouterProvider router={router} />
+    </>
   )
 }
 

@@ -5,12 +5,13 @@ import { Input, Textarea } from "@nextui-org/react";
 import { KeyboardEvent, useEffect, useRef, useState } from "react";
 import { set } from "mobx";
 import Word from "../components/Word";
+import Stats from "./Stats";
 
 export default observer(function TypingArea() {
   const { typingStore } = useStore();
   var { typedText, updateTypedText, paragraph, currentLetterIndex, updateCurrentLetterIndex, currentWordIndex, updateCurrentWordIndex, setKey, StartTest, StopTest, ElapsedTime, startTest } = typingStore;
   const inputRef = useRef<HTMLInputElement>(null);
-  const [elapsedTime, setElapsedTime] = useState(0)
+  const [showStats, setShowStats] = useState(false)
   const [errorCount, setErrorCount] = useState(0)
   const [wrongLetters, setWrongLetters] = useState(0)
   const [shiftPressed, setShiftPressed] = useState(false)
@@ -57,8 +58,7 @@ export default observer(function TypingArea() {
     updateCurrentLetterIndex(0)
     updateCurrentWordIndex(0)
     StopTest()
-    console.log(ElapsedTime())
-    setElapsedTime(ElapsedTime())
+    setShowStats(true)
   }
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -117,20 +117,21 @@ export default observer(function TypingArea() {
     return paragraph.split(" ").map((word, index) => <Word key={`${index}`} id={`${index}`} letters={word.split("")}/>)
   }
 
-
   return (
     <>
       <div id="InputWrapper" className="flex flex-col items-center justify-center h-dvh">
-        {elapsedTime !== 0 && !startTest ? <div className="p-4 text-white bg-black">Elapsed Time: {elapsedTime}ms</div> : null}
+        { showStats ?
+        <Stats/> : 
         <div onClick={() => { inputRef.current?.focus();  }} className="flex relative items-center justify-center w-1/2 h-1/2">
           <input ref={inputRef} className="input absolute opacity-0" type="text" onKeyDown={handleKeyDown} onKeyUp={handleKeyUp}/>
-          <motion.div className="caret absolute z-40" ref={caretRef} animate={{ opacity: flashing ? [0, 1, 0] : 1 , x: caretX, y: caretY, transition: {duration: 1, opacity: {repeat: Infinity, repeatDelay: 0.1}, x: {duration: 0.3}, y: {duration: 0.1}}}}  />
+          <motion.div className="caret absolute z-40" ref={caretRef} animate={{ x: caretX, y: caretY, transition: {x: {duration: 0.15}, y: {duration: 0.1}}}}  />
           <div className="flex flex-wrap items-center w-full">
             {
               RenderParagraph() 
             }
           </div>
         </div>
+        }
       </div>
     </>
   )
