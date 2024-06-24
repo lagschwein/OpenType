@@ -3,19 +3,14 @@ import { observer } from "mobx-react-lite";
 import { animate, motion, useAnimate } from "framer-motion";
 import { Input, Textarea } from "@nextui-org/react";
 import { KeyboardEvent, useEffect, useRef, useState } from "react";
-import { set } from "mobx";
 import Word from "../components/Word";
 import Stats from "./Stats";
 
 export default observer(function TypingArea() {
   const { typingStore } = useStore();
-  var { typedText, updateTypedText, paragraph, currentLetterIndex, updateCurrentLetterIndex, currentWordIndex, updateCurrentWordIndex, setKey, StartTest, StopTest, ElapsedTime, startTest } = typingStore;
+  var { typedText, updateTypedText, paragraph, currentLetterIndex, updateCurrentLetterIndex, currentWordIndex, updateCurrentWordIndex, setKey, StartTest, StopTest, startTest} = typingStore;
   const inputRef = useRef<HTMLInputElement>(null);
   const [showStats, setShowStats] = useState(false)
-  const [errorCount, setErrorCount] = useState(0)
-  const [wrongLetters, setWrongLetters] = useState(0)
-  const [shiftPressed, setShiftPressed] = useState(false)
-  const [ctrlPressed, setCtrlPressed] = useState(false)
 
   // Caret animation
   const [caretX, setCaretX] = useState(0)
@@ -24,6 +19,7 @@ export default observer(function TypingArea() {
   const [flashing, setFlashing] = useState(true)
 
   useEffect(() => {
+    console.log("next letter")
     inputRef.current?.focus()
 
     flashing ? animate(caretRef.current,  {opacity: [0, 1, 0]}, {duration: 1, repeat: Infinity}) : animate(caretRef.current, {opacity: 1})
@@ -37,11 +33,16 @@ export default observer(function TypingArea() {
     var element = document.getElementById(`${currentWordIndex}-${currentLetterIndex}`)
     if(element == null)
     {
+      // Next word
+      console.log("Next word")
       element = document.getElementById(`${currentWordIndex}`)
       element ? updateCaretPosition(element.offsetLeft+element.offsetWidth, element.offsetTop-2) : element
-      return
     } 
-    element ? updateCaretPosition(element.offsetLeft, element.offsetTop-2) : element
+    else
+    {
+      // Next letter
+      element ? updateCaretPosition(element.offsetLeft, element.offsetTop-2) : element
+    }
   }, [typedText, startTest])
 
   const updateCaretPosition = (offsetX: number, offsetY: number) => {
@@ -54,7 +55,6 @@ export default observer(function TypingArea() {
   }
 
   const reset = () => {
-    updateTypedText("")
     updateCurrentLetterIndex(0)
     updateCurrentWordIndex(0)
     StopTest()
@@ -75,6 +75,8 @@ export default observer(function TypingArea() {
       {
         if(currentWordIndex > 0)
         {
+          // Check if the previous word has an error
+          if(!document.getElementById(`${currentWordIndex - 1}`)?.classList.contains("error")) return;
           updateCurrentWordIndex(currentWordIndex - 1)
           updateCurrentLetterIndex(typedText.split(" ")[currentWordIndex - 1].length)
           updateTypedText(typedText.slice(0, -1))
@@ -83,6 +85,7 @@ export default observer(function TypingArea() {
     }
     else if(e.key === " ")
     {
+      if(currentLetterIndex === 0) return;
       updateCurrentWordIndex(currentWordIndex + 1)
       updateCurrentLetterIndex(0)
       updateTypedText(typedText + " ")
@@ -119,7 +122,7 @@ export default observer(function TypingArea() {
 
   return (
     <>
-      <div id="InputWrapper" className="flex flex-col items-center justify-center h-dvh">
+      <div id="InputWrapper" className="flex flex-col items-center justify-center h-full">
         { showStats ?
         <Stats/> : 
         <div onClick={() => { inputRef.current?.focus();  }} className="flex relative items-center justify-center w-1/2 h-1/2">

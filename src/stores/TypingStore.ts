@@ -10,9 +10,38 @@ export default class TypingStore {
   currentLetterIndex: number = 0;
   startTest: boolean = false;
   timer: StopWatch = new StopWatch();
+  errors: number = 0;
+  wpms: number[] = [];
+  wpmCorrected: number[] = [];
 
   constructor() {
     makeAutoObservable(this);
+  }
+
+  get accuracy (): number {
+    const totalChars = this.typedText.split(" ").length;
+    let numErrors = this.errors;
+    const correctChars = totalChars - numErrors;
+    console.log("Correct Chars: ", correctChars, "Total Chars: ", totalChars)
+    return Math.round((correctChars / totalChars) * 100);
+  }
+
+  public updateErrors = () => {
+    runInAction(() => {
+      this.errors = this.errors +1
+    })
+  }
+
+  public updateWpms = (i: number, index: number) => {
+    runInAction(() => {
+      this.wpms[index] = i;
+    })
+  }
+
+  public updateWpmCorrected = (i: number, index: number) => {
+    runInAction(() => {
+      this.wpmCorrected[index] = i;
+    })
   }
 
   public updateTypedText = (text: string) => {
