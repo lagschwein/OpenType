@@ -2,7 +2,7 @@ import "./Test.css"
 import TypingArea from '../containers/TypingArea'
 import Footer from "../containers/Footer"
 import { InitProgressReport } from "@mlc-ai/web-llm"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { useStore } from "../stores/store"
 import LoadingComponent from "../components/LoadingComponent"
 import { observer } from "mobx-react-lite"
