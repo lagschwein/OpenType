@@ -1,7 +1,7 @@
 import { useStore } from "../stores/store";
 import { observer } from "mobx-react-lite";
-import { animate, motion, useAnimate } from "framer-motion";
-import { Button, Input, Textarea } from "@nextui-org/react";
+import { motion, useAnimate } from "framer-motion";
+import { Button } from "@nextui-org/react";
 import { KeyboardEvent, useEffect, useRef, useState } from "react";
 import Word from "../components/Word";
 import Stats from "./Stats";

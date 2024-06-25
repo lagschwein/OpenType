@@ -64,7 +64,7 @@ export default observer(function Word(props: WordProps)
 
   useEffect(() => {
     updateWpms(calculateCurrentWpm(), currentWordIndex)
-    updateWpmCorrected(calculateCurrentWpm()*accuracy, currentWordIndex)
+    updateWpmCorrected(calculateCurrentWpm()*(accuracy/100), currentWordIndex)
 
     if (props.id === undefined) return
     if(props.id === `${currentWordIndex}`) {
