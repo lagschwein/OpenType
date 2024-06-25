@@ -39,6 +39,12 @@ export default class TypingStore {
       this.errors = this.errors +1
     })
   }
+  
+  public setError = (i: number) => {
+    runInAction(() => {
+      this.errors = i;
+    })
+  }
 
   public updateWpms = (i: number, index: number) => {
     runInAction(() => {
@@ -46,9 +52,21 @@ export default class TypingStore {
     })
   }
 
+  public resetWpms = () => {
+    runInAction(() => {
+      this.wpms = [];
+    })
+  }
+
   public updateWpmCorrected = (i: number, index: number) => {
     runInAction(() => {
       this.wpmCorrected[index] = i;
+    })
+  }
+
+  public resetWpmCorrected = () => {
+    runInAction(() => {
+      this.wpmCorrected = [];
     })
   }
 

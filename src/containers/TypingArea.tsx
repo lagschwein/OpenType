@@ -9,7 +9,9 @@ import { ChatCompletionMessageParam } from "@mlc-ai/web-llm";
 
 export default observer(function TypingArea() {
   const { typingStore } = useStore();
-  var { typedText, engine, setParagraph, updateTypedText, paragraph, currentLetterIndex, updateCurrentLetterIndex, currentWordIndex, updateCurrentWordIndex, setKey, StartTest, StopTest, startTest} = typingStore;
+  var { typedText, engine, setParagraph, updateTypedText, paragraph, currentLetterIndex, updateCurrentLetterIndex, currentWordIndex, updateCurrentWordIndex, setKey, StartTest, StopTest, startTest,
+    setError, resetWpmCorrected, resetWpms
+  } = typingStore;
   const inputRef = useRef<HTMLInputElement>(null);
   const [showStats, setShowStats] = useState(false)
 
@@ -22,7 +24,7 @@ export default observer(function TypingArea() {
   // GenAi
   const messages: ChatCompletionMessageParam[] = [
     {role: "system", content: "You are a generative ai thats entire role is to generate text for a typing test."},
-    {role: "user", content: "Generate a 20 word paragraph in the style of a stephen king novel. Do not preface your answer with anything the only text returned should be the generated paragraph"},
+    {role: "user", content: "Generate a 5 word sentence in the style of a stephen king novel. Do not preface your answer with anything the only text returned should be the generated paragraph"},
   ]
 
   useEffect(() => {
@@ -34,7 +36,7 @@ export default observer(function TypingArea() {
     //Check if we are at the end of the paragraph
     if(currentWordIndex > (paragraph.split(" ").length - 1)) 
     {
-      reset();
+      finishTest();
     }
 
     var element = document.getElementById(`${currentWordIndex}-${currentLetterIndex}`)
@@ -64,6 +66,15 @@ export default observer(function TypingArea() {
   const reset = () => {
     updateCurrentLetterIndex(0)
     updateCurrentWordIndex(0)
+    updateTypedText("")
+    setError(0)
+    resetWpms()
+    resetWpmCorrected() 
+    setFlashing(true)
+    setShowStats(false)
+  }
+  
+  const finishTest = () => {
     StopTest()
     setShowStats(true)
   }
@@ -134,7 +145,6 @@ export default observer(function TypingArea() {
         const reply = await engine.chat.completions.create({
           messages,
         });
-        updateTypedText("")
         setParagraph(reply.choices[0].message.content ? reply.choices[0].message.content : "Error")
         console.log(reply.choices[0].message.content)
       }
@@ -163,8 +173,8 @@ export default observer(function TypingArea() {
         <Button onClick={() => { 
           
           setParagraph("Loading...")  
-          setShowStats(false)
           generateParagraph()
+          reset()
         }} className="absolute bottom-32 mt-4">Reset</Button>
       </div>
     </>
