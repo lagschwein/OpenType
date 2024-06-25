@@ -1,11 +1,15 @@
 import { RouteObject, createBrowserRouter } from "react-router-dom"
-import Main from "../pages/Main"
+import Test from "../pages/Test"
+import NotSupported from "../pages/errors/NotSupported"
+import App from "../App"
 
 export const routes: RouteObject[] = [
 	{
 		path: '/',
-		element: <Main />,
+		element: <App />,
     children: [
+			{"path": "", "element": <Test />},
+			{"path": "not-supported", "element": <NotSupported />}
     ]
 	}
 ]
