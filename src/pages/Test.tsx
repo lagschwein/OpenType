@@ -1,60 +1,31 @@
 import "./Test.css"
 import TypingArea from '../containers/TypingArea'
 import Footer from "../containers/Footer"
-import { Spinner } from "@nextui-org/react"
-import { CreateMLCEngine, InitProgressReport } from "@mlc-ai/web-llm"
+import { InitProgressReport } from "@mlc-ai/web-llm"
 import { useEffect, useState } from "react"
 import { useStore } from "../stores/store"
-import { router } from "../router/Routes"
+import LoadingComponent from "../components/LoadingComponent"
+import { observer } from "mobx-react-lite"
 
-export default function Test() {
+export default observer(function Test() {
   const {typingStore} = useStore()
-  const {setEngine, engine} = typingStore
-  const [loading, setLoading] = useState(true)
+  const {loadEngine, selectedModel, engine} = typingStore
 
-  const selectedModel = "Qwen2-1.5B-Instruct-q4f16_1-MLC"
 
   const initProgressCallback = (initProgress: InitProgressReport) => {
     console.log(initProgress)
   }
 
-  const loadEngine = async () => {
-    try {
-      setLoading(true)
-      if(engine) {
-        setLoading(false)
-        return
-      }
-      const loadedEngine = await CreateMLCEngine(
-        selectedModel,
-        { initProgressCallback: initProgressCallback },
-      )
-      setEngine(loadedEngine)
-      setLoading(false);
-    } catch (error) {
-      if (error instanceof Error) {
-        setLoading(false)
-        router.navigate("not-supported")
-      }
-    }
-  }
-
   useEffect(() => {
+    if(!engine) loadEngine(selectedModel, initProgressCallback)
+  }, [engine, loadEngine])
 
-    loadEngine()
-  })
+  if(typingStore.loadingEngine) { return <LoadingComponent />}
 
   return (
-    <>
-    {loading ? 
-      <div className="flex item-center justify-center h-screen">
-        <Spinner></Spinner>
-      </div> : 
-      <div className="flex flex-col h-screen">
-        <TypingArea />
-        <Footer />
-      </div>
-    }
-    </>
+    <div className="flex flex-col h-screen">
+      <TypingArea />
+      <Footer />
+    </div>
   )
-}
+})

@@ -10,7 +10,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <NextUIProvider>
       <StoreContext.Provider value={store}>
-        <main className="catppuccin-latte text-foreground bg-background">
+        <main className="dark text-foreground bg-background">
           <RouterProvider router={router}/>
         </main>
       </StoreContext.Provider>

@@ -60,11 +60,9 @@ export default observer(function Word(props: WordProps)
   const [active, setActive] = useState(false)
   const [error, setError] = useState(false)
   const { typingStore } = useStore()
-  const { currentWordIndex, typedText, accuracy, paragraph, updateErrors, updateWpmCorrected, updateWpms, ElapsedTime, errors } = typingStore
+  const { currentWordIndex, typedText, accuracy, paragraph, updateErrors, updateWpmCorrected, updateWpms, ElapsedTime} = typingStore
 
   useEffect(() => {
-    updateWpms(calculateCurrentWpm(), currentWordIndex)
-    updateWpmCorrected(calculateCurrentWpm()*(accuracy/100), currentWordIndex)
 
     if (props.id === undefined) return
     if(props.id === `${currentWordIndex}`) {
@@ -89,6 +87,8 @@ export default observer(function Word(props: WordProps)
     // check typed word against paragraph
     var word = typedText.split(" ")[currentWordIndex-1]
     var correctWord = paragraph.split(" ")[currentWordIndex-1]
+    updateWpms(calculateCurrentWpm(), currentWordIndex)
+    updateWpmCorrected(calculateCurrentWpm()*(accuracy/100), currentWordIndex)
     if (word !== correctWord) {
       updateErrors()
       setErrorCallback(true)

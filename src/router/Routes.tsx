@@ -8,7 +8,7 @@ export const routes: RouteObject[] = [
 		path: '/',
 		element: <App />,
     children: [
-			{"path": "", "element": <Test />},
+			{"path": "test", "element": <Test />},
 			{"path": "not-supported", "element": <NotSupported />}
     ]
 	}

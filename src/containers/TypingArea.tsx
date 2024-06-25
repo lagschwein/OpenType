@@ -10,7 +10,7 @@ import { ChatCompletionMessageParam } from "@mlc-ai/web-llm";
 export default observer(function TypingArea() {
   const { typingStore } = useStore();
   var { typedText, engine, setParagraph, updateTypedText, paragraph, currentLetterIndex, updateCurrentLetterIndex, currentWordIndex, updateCurrentWordIndex, setKey, StartTest, StopTest, startTest,
-    setError, resetWpmCorrected, resetWpms
+    setError, resetWpmCorrected, resetWpms, loadEngine
   } = typingStore;
   const inputRef = useRef<HTMLInputElement>(null);
   const [showStats, setShowStats] = useState(false)
@@ -24,11 +24,28 @@ export default observer(function TypingArea() {
   // GenAi
   const messages: ChatCompletionMessageParam[] = [
     {role: "system", content: "You are a generative ai thats entire role is to generate text for a typing test."},
-    {role: "user", content: "Generate a 5 word sentence in the style of a stephen king novel. Do not preface your answer with anything the only text returned should be the generated paragraph"},
+    {role: "user", content: typingStore.userPrompt},
   ]
 
+  const generateParagraph = async () => {
+    if(engine)
+    {
+      try {
+        const reply = await engine.chat.completions.create({
+          messages,
+        });
+        setParagraph(reply.choices[0].message.content ? reply.choices[0].message.content : "Error")
+        console.log(reply.choices[0].message.content)
+      }
+      catch(e)
+      {
+        console.log(e)
+        loadEngine()
+      }
+    }
+  }
+
   useEffect(() => {
-    console.log("next letter")
     inputRef.current?.focus()
 
     flashing ? animate(caretRef.current,  {opacity: [0, 1, 0]}, {duration: 1, repeat: Infinity}) : animate(caretRef.current, {opacity: 1})
@@ -138,22 +155,6 @@ export default observer(function TypingArea() {
     return paragraph.split(" ").map((word, index) => <Word key={`${index}`} id={`${index}`} letters={word.split("")}/>)
   }
 
-  const generateParagraph = async () => {
-    if(engine)
-    {
-      try {
-        const reply = await engine.chat.completions.create({
-          messages,
-        });
-        setParagraph(reply.choices[0].message.content ? reply.choices[0].message.content : "Error")
-        console.log(reply.choices[0].message.content)
-      }
-      catch(e)
-      {
-        console.log(e)
-      }
-    }
-  }
 
   return (
     <>

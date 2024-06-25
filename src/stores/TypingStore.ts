@@ -1,6 +1,7 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import StopWatch from "../util/Timer";
-import { MLCEngine } from "@mlc-ai/web-llm";
+import { CreateMLCEngine, MLCEngine } from "@mlc-ai/web-llm";
+import { router } from "../router/Routes";
 
 export default class TypingStore {
   typedText: string = "";
@@ -14,7 +15,10 @@ export default class TypingStore {
   errors: number = 0;
   wpms: number[] = [];
   wpmCorrected: number[] = [];
+  loadingEngine: boolean = false;
   engine: MLCEngine | null = null;
+  selectedModel: string = "Qwen2-1.5B-Instruct-q4f16_1-MLC";
+  userPrompt: string = "Generate a 5 word sentence. Do not preface your answer with anything the only text returned should be the generated sentence. The sentence should be coherent and make sense. Use the following text as context to generate the sentence: " 
 
   constructor() {
     makeAutoObservable(this);
@@ -26,6 +30,29 @@ export default class TypingStore {
     const correctChars = totalChars - numErrors;
     console.log("Correct Chars: ", correctChars, "Total Chars: ", totalChars)
     return Math.round((correctChars / totalChars) * 100);
+  }
+
+  loadEngine = async (selectedModel: string = this.selectedModel, initProgressCallback: any | null = null) => {
+    this.setLoadingEngine(true)
+    try {
+      const loadedEngine = await CreateMLCEngine(
+        selectedModel,
+        { initProgressCallback: initProgressCallback },
+      )
+      this.setEngine(loadedEngine)
+      this.setLoadingEngine(false)
+    } catch (error) {
+      this.setLoadingEngine(false)
+      router.navigate("/not-supported")
+    }
+  }
+  
+  setLoadingEngine = (loading: boolean) => {
+    this.loadingEngine = loading;
+  }
+
+  setUserPrompt = (prompt: string) => {
+      this.userPrompt = this.userPrompt + prompt; 
   }
 
   public setEngine = (engine: MLCEngine) => {

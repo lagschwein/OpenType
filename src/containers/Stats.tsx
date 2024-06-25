@@ -35,7 +35,7 @@ export default observer(function Stats() {
 
   const getGraphData = () => {
     let data = []
-    for (let i = 0; i < wpms.length; i++) {
+    for (let i = 1; i < wpms.length; i++) {
       data.push({wpm: wpms[i], raw: wpmCorrected[i]})
     }
     return data
