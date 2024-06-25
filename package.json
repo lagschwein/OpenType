@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@mlc-ai/web-llm": "^0.2.46",
     "@nextui-org/react": "^2.4.2",
     "framer-motion": "^11.2.10",
     "mobx": "^6.12.4",

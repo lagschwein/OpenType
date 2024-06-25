@@ -1,5 +1,6 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import StopWatch from "../util/Timer";
+import { MLCEngine } from "@mlc-ai/web-llm";
 
 export default class TypingStore {
   typedText: string = "";
@@ -13,6 +14,7 @@ export default class TypingStore {
   errors: number = 0;
   wpms: number[] = [];
   wpmCorrected: number[] = [];
+  engine: MLCEngine | null = null;
 
   constructor() {
     makeAutoObservable(this);
@@ -24,6 +26,12 @@ export default class TypingStore {
     const correctChars = totalChars - numErrors;
     console.log("Correct Chars: ", correctChars, "Total Chars: ", totalChars)
     return Math.round((correctChars / totalChars) * 100);
+  }
+
+  public setEngine = (engine: MLCEngine) => {
+    runInAction(() => {
+      this.engine = engine;
+    })
   }
 
   public updateErrors = () => {
@@ -65,6 +73,12 @@ export default class TypingStore {
   public setKey = (key: string) => {
     runInAction(() => {
       this.key = key;
+    })
+  }
+
+  public setParagraph = (text: string) => {
+    runInAction(() => {
+      this.paragraph = text;
     })
   }
   

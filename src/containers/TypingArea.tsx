@@ -1,14 +1,15 @@
 import { useStore } from "../stores/store";
 import { observer } from "mobx-react-lite";
 import { animate, motion, useAnimate } from "framer-motion";
-import { Input, Textarea } from "@nextui-org/react";
+import { Button, Input, Textarea } from "@nextui-org/react";
 import { KeyboardEvent, useEffect, useRef, useState } from "react";
 import Word from "../components/Word";
 import Stats from "./Stats";
+import { ChatCompletionMessageParam } from "@mlc-ai/web-llm";
 
 export default observer(function TypingArea() {
   const { typingStore } = useStore();
-  var { typedText, updateTypedText, paragraph, currentLetterIndex, updateCurrentLetterIndex, currentWordIndex, updateCurrentWordIndex, setKey, StartTest, StopTest, startTest} = typingStore;
+  var { typedText, engine, setParagraph, updateTypedText, paragraph, currentLetterIndex, updateCurrentLetterIndex, currentWordIndex, updateCurrentWordIndex, setKey, StartTest, StopTest, startTest} = typingStore;
   const inputRef = useRef<HTMLInputElement>(null);
   const [showStats, setShowStats] = useState(false)
 
@@ -17,6 +18,12 @@ export default observer(function TypingArea() {
   const [caretY, setCaretY] = useState(0)
   const [caretRef, animate] = useAnimate();
   const [flashing, setFlashing] = useState(true)
+
+  // GenAi
+  const messages: ChatCompletionMessageParam[] = [
+    {role: "system", content: "You are a generative ai thats entire role is to generate text for a typing test."},
+    {role: "user", content: "Generate a 20 word paragraph in the style of a stephen king novel. Do not preface your answer with anything the only text returned should be the generated paragraph"},
+  ]
 
   useEffect(() => {
     console.log("next letter")
@@ -43,7 +50,7 @@ export default observer(function TypingArea() {
       // Next letter
       element ? updateCaretPosition(element.offsetLeft, element.offsetTop-2) : element
     }
-  }, [typedText, startTest])
+  }, [typedText, startTest, paragraph])
 
   const updateCaretPosition = (offsetX: number, offsetY: number) => {
     var caretElement: HTMLDivElement | null = caretRef.current
@@ -120,6 +127,24 @@ export default observer(function TypingArea() {
     return paragraph.split(" ").map((word, index) => <Word key={`${index}`} id={`${index}`} letters={word.split("")}/>)
   }
 
+  const generateParagraph = async () => {
+    if(engine)
+    {
+      try {
+        const reply = await engine.chat.completions.create({
+          messages,
+        });
+        updateTypedText("")
+        setParagraph(reply.choices[0].message.content ? reply.choices[0].message.content : "Error")
+        console.log(reply.choices[0].message.content)
+      }
+      catch(e)
+      {
+        console.log(e)
+      }
+    }
+  }
+
   return (
     <>
       <div id="InputWrapper" className="flex flex-col items-center justify-center h-full">
@@ -135,6 +160,12 @@ export default observer(function TypingArea() {
           </div>
         </div>
         }
+        <Button onClick={() => { 
+          
+          setParagraph("Loading...")  
+          setShowStats(false)
+          generateParagraph()
+        }} className="absolute bottom-32 mt-4">Reset</Button>
       </div>
     </>
   )
