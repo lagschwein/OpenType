@@ -5,10 +5,11 @@ import { KeyboardEvent, useEffect, useRef, useState } from "react";
 import Word from "../components/Word";
 import Stats from "./Stats";
 import standardKeys from "../util/keys";
+import paragraphGen from "../util/paragraphGen";
 
 export default observer(function TypingArea() {
   const { typingStore } = useStore();
-  var { typedText, setParagraph, updateTypedText, paragraph, currentLetterIndex, updateCurrentLetterIndex, currentWordIndex, updateCurrentWordIndex, StartTest, StopTest, startTest  } = typingStore;
+  var { typedText, updateTypedText, paragraph, currentLetterIndex, updateCurrentLetterIndex, currentWordIndex, updateCurrentWordIndex, StartTest, StopTest, startTest  } = typingStore;
   const inputRef = useRef<HTMLInputElement>(null);
   const [showStats, setShowStats] = useState(false)
 
@@ -42,7 +43,7 @@ export default observer(function TypingArea() {
       // Next letter
       element ? updateCaretPosition(element.offsetLeft, element.offsetTop-2) : element
     }
-  }, [typedText])
+  }, [typedText, paragraph])
 
   useEffect(() => {
     if(startTest)
@@ -124,10 +125,15 @@ export default observer(function TypingArea() {
     typingStore.generateParagraph()
     setShowStats(false)
     typingStore.reset()
+    typingStore.setParagraph(paragraphGen())
   }
 
   const RenderParagraph = () => {
-    return paragraph.split(" ").map((word, index) => <Word key={`${index}`} id={`${index}`} letters={word.split("")}/>)
+    return paragraph.split(" ").map((word, index) => {
+      const typedWord = typedText.split(" ")[index] ?? ""
+      return <Word key={`${index}`} id={`${index}`} letters={word} typedWord={typedWord}/>
+    }
+    )
   }
 
 

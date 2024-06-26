@@ -1,68 +1,73 @@
 import { observer } from "mobx-react-lite"
-import { useEffect , useState } from "react"
+import { memo, useCallback, useEffect , useState } from "react"
 import { useStore } from "../stores/store"
 
 interface LetterProps {
   l: string
   id: string 
+  correct: string 
 }
 
-const Letter = observer(({l, id}: LetterProps)  => {
-  const [correct, setCorrect] = useState("")
-  const { typingStore } = useStore()
-  const { typedText, currentLetterIndex, currentWordIndex} = typingStore
+const Letter = memo(observer(({l, id, correct}: LetterProps)  => {
+  const [style, setStyle] = useState("")
+  // const { typingStore } = useStore()
+  // const { typedText, currentLetterIndex, currentWordIndex} = typingStore
 
-  useEffect(() => {
-    var letterIndex = parseInt(id.split("-")[1])
-    var wordIndex = parseInt(id.split("-")[0])
-    var typedWord = typedText.split(" ")[wordIndex]
-    var currentLetter = currentLetterIndex -1
-    if(typedWord === "") 
-    {
-      setCorrect("")
-      return
-    }
+  useEffect(() => {setStyle(correct)}, [correct])
+  // useEffect(() => {
+  //   const [wordIndex, letterIndex] = id.split("-").map((i) => parseInt(i))
+  //   console.log(`I am letter ${letterIndex} in word ${wordIndex}`)
+  //   var actualWord = typingStore.paragraph.split(" ")[wordIndex]
+  //   var typedWord = typedText.split(" ")[wordIndex]
+  //   var currentLetter = currentLetterIndex -1
+    
 
-    if(currentLetter < 0) currentLetter = 0 
-    if(wordIndex === currentWordIndex) {
-      if(letterIndex > currentLetter)
-      {
-        setCorrect("")
-      }
-      else
-      {
-        if(l === typedWord[letterIndex]) {
-          setCorrect("correct")
-        } else {
-          setCorrect("incorrect")
-        }
-      }
-    }
-    else if (wordIndex > currentWordIndex)
-    {
-      setCorrect("")
-    }
-  }, [currentLetterIndex, currentWordIndex, typedText])
+  //   if(!typedWord || typedWord === "") 
+  //   {
+  //     setCorrect("")
+  //     return
+  //   }
+
+  //   if(currentLetter < 0) currentLetter = 0 
+  //   if(wordIndex === currentWordIndex) {
+  //     if(letterIndex > currentLetter)
+  //     {
+  //       setCorrect("")
+  //     }
+  //     else
+  //     {
+  //       if(actualWord[letterIndex] === typedWord[letterIndex]) {
+  //         setCorrect("text-primary")
+  //       } else {
+  //         setCorrect("text-error")
+  //       }
+  //     }
+  //   }
+  //   else if (wordIndex > currentWordIndex)
+  //   {
+  //     setCorrect("")
+  //   }
+  // }, [typedText])
 
   return (
-    <div id={id} className={"bg-transparent text-primary-800 letter " + correct}>{l}</div>
+    <div id={id} className={"bg-transparent letter " + style}>{l}</div>
   )
-})
+}))
 
 interface WordProps {
-  letters: string[]
+  letters: string
   id: string | undefined
+  typedWord: string
 }
 
-export default observer(function Word(props: WordProps) 
+export default memo(observer(function Word(props: WordProps) 
 {
   const [active, setActive] = useState(false)
   const [error, setError] = useState(false)
   const { typingStore } = useStore()
-  const { currentWordIndex, typedText, accuracy, paragraph, updateErrors, updateWpmCorrected, updateWpms, ElapsedTime} = typingStore
+  const { currentWordIndex } = typingStore
 
   useEffect(() => {
-
     if (props.id === undefined) return
     if(props.id === `${currentWordIndex}`) {
       setActive(true)
@@ -80,16 +85,15 @@ export default observer(function Word(props: WordProps)
       setError(false)
     }
 
+
   }, [currentWordIndex])
 
   const checkErrors = () => {
     // check typed word against paragraph
-    var word = typedText.split(" ")[currentWordIndex-1]
-    var correctWord = paragraph.split(" ")[currentWordIndex-1]
-    updateWpms(calculateCurrentWpm(), currentWordIndex)
-    updateWpmCorrected(calculateCurrentWpm()*(accuracy/100), currentWordIndex)
-    if (word !== correctWord) {
-      updateErrors()
+    // updateWpms(calculateCurrentWpm(), currentWordIndex)
+    // updateWpmCorrected(calculateCurrentWpm()*(accuracy/100), currentWordIndex)
+    if (props.typedWord !== props.letters){
+      // updateErrors()
       setErrorCallback(true)
     }
     else
@@ -98,11 +102,11 @@ export default observer(function Word(props: WordProps)
     }
   }
 
-  const calculateCurrentWpm = () => {
-    const totalChars = typedText.replace(/\s/g, "").length;
-    const totalWords = totalChars / 5;
-    return Math.round(totalWords / ((ElapsedTime() / 1000)/60))
-  }
+  // const calculateCurrentWpm = () => {
+  //   const totalChars = typedText.replace(/\s/g, "").length;
+  //   const totalWords = totalChars / 5;
+  //   return Math.round(totalWords / ((ElapsedTime() / 1000)/60))
+  // }
 
   const setErrorCallback = (b: boolean) => {
     setError(b)
@@ -116,9 +120,27 @@ export default observer(function Word(props: WordProps)
     return classname
   }
 
+  const isLetterCorrect = (letter: string, typedLetter: string) => {
+
+    if(!typedLetter || typedLetter === "") 
+    {
+      return "" 
+    }
+
+    if(letter === typedLetter) {
+      return "text-primary"
+    } else {
+      return "text-error"
+    }
+  }
+    
+
   return (
     <div id={props.id} className={getClassName()}>
-      {props.letters.map((l, index) => <Letter key={`${props.id}-${index}`} id={`${props.id}-${index}`} l={l}/>)}
+      {props.letters.split("").map((l, index) => {
+        const correct = isLetterCorrect(l, props.typedWord[index])
+        return <Letter key={`${props.id}-${index}`} id={`${props.id}-${index}`} l={l} correct={correct}/>
+      })}
     </div>
   )
-})
+}))
