@@ -2,7 +2,6 @@ import { observer } from "mobx-react-lite";
 import { useStore } from "../stores/store";
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 import { useEffect, useState } from "react";
-import { set } from "mobx";
 
 
 export default observer(function Stats() {
@@ -14,7 +13,6 @@ export default observer(function Stats() {
   const [inlineAccuracy, setInlineAccuracy] = useState(100)
 
   useEffect(() => {
-    console.log("is this running")
     setInlineAccuracy(accuracy) 
     const color = getComputedStyle(document.documentElement).getPropertyValue('--nextui-secondary-500') 
     const hsl: string[] = color.split(" ")
@@ -25,7 +23,7 @@ export default observer(function Stats() {
     const hslRaw: string[] = colorRaw.split(" ")
     const hslNumRaw: number[] = hslRaw.map((val) => parseInt(val))
     setStrokeColorRaw(HSLToHex({h: hslNumRaw[0], s: hslNumRaw[1], l: hslNumRaw[2]}))
-  })
+  }, [])
 
   const calculateWPM = () => {
     const totalChars = paragraph.replace(/\s/g, "").length;

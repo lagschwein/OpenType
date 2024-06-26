@@ -1,17 +1,14 @@
 import { useStore } from "../stores/store";
 import { observer } from "mobx-react-lite";
 import { motion, useAnimate } from "framer-motion";
-import { Button } from "@nextui-org/react";
 import { KeyboardEvent, useEffect, useRef, useState } from "react";
 import Word from "../components/Word";
 import Stats from "./Stats";
-import { ChatCompletionMessageParam } from "@mlc-ai/web-llm";
+import standardKeys from "../util/keys";
 
 export default observer(function TypingArea() {
   const { typingStore } = useStore();
-  var { typedText, engine, setParagraph, updateTypedText, paragraph, currentLetterIndex, updateCurrentLetterIndex, currentWordIndex, updateCurrentWordIndex, setKey, StartTest, StopTest, startTest,
-    setError, resetWpmCorrected, resetWpms, loadEngine
-  } = typingStore;
+  var { typedText, setParagraph, updateTypedText, paragraph, currentLetterIndex, updateCurrentLetterIndex, currentWordIndex, updateCurrentWordIndex, StartTest, StopTest, startTest  } = typingStore;
   const inputRef = useRef<HTMLInputElement>(null);
   const [showStats, setShowStats] = useState(false)
 
@@ -21,31 +18,8 @@ export default observer(function TypingArea() {
   const [caretRef, animate] = useAnimate();
   const [flashing, setFlashing] = useState(true)
 
-  // GenAi
-  const messages: ChatCompletionMessageParam[] = [
-    {role: "system", content: "You are a generative ai thats entire role is to generate text for a typing test."},
-    {role: "user", content: typingStore.userPrompt},
-  ]
-
-  const generateParagraph = async () => {
-    if(engine)
-    {
-      try {
-        const reply = await engine.chat.completions.create({
-          messages,
-        });
-        setParagraph(reply.choices[0].message.content ? reply.choices[0].message.content : "Error")
-        console.log(reply.choices[0].message.content)
-      }
-      catch(e)
-      {
-        console.log(e)
-        loadEngine()
-      }
-    }
-  }
-
   useEffect(() => {
+    console.log(`word: ${currentWordIndex} letter: ${currentLetterIndex}`)
     inputRef.current?.focus()
 
     flashing ? animate(caretRef.current,  {opacity: [0, 1, 0]}, {duration: 1, repeat: Infinity}) : animate(caretRef.current, {opacity: 1})
@@ -60,7 +34,6 @@ export default observer(function TypingArea() {
     if(element == null)
     {
       // Next word
-      console.log("Next word")
       element = document.getElementById(`${currentWordIndex}`)
       element ? updateCaretPosition(element.offsetLeft+element.offsetWidth, element.offsetTop-2) : element
     } 
@@ -69,7 +42,18 @@ export default observer(function TypingArea() {
       // Next letter
       element ? updateCaretPosition(element.offsetLeft, element.offsetTop-2) : element
     }
-  }, [typedText, startTest, paragraph])
+  }, [typedText])
+
+  useEffect(() => {
+    if(startTest)
+    {
+      setFlashing(false)
+    }
+    else{
+      setFlashing(true);
+    }
+
+  }, [startTest])
 
   const updateCaretPosition = (offsetX: number, offsetY: number) => {
     var caretElement: HTMLDivElement | null = caretRef.current
@@ -80,16 +64,6 @@ export default observer(function TypingArea() {
     }
   }
 
-  const reset = () => {
-    updateCurrentLetterIndex(0)
-    updateCurrentWordIndex(0)
-    updateTypedText("")
-    setError(0)
-    resetWpms()
-    resetWpmCorrected() 
-    setFlashing(true)
-    setShowStats(false)
-  }
   
   const finishTest = () => {
     StopTest()
@@ -98,7 +72,6 @@ export default observer(function TypingArea() {
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
 
-    setKey(e.key)
     if(e.key === "Backspace")
     {
       if(currentLetterIndex > 0)
@@ -135,11 +108,11 @@ export default observer(function TypingArea() {
     else if(e.key === "Control")
     { 
     }
-    else
+    else if(standardKeys.includes(e.key))
     {
+      console.log(e.key)
       if(!startTest)
       {
-        setFlashing(false)
         StartTest()
       }
       updateTypedText(typedText + e.key)
@@ -147,8 +120,9 @@ export default observer(function TypingArea() {
     }
   }
 
-  const handleKeyUp = (e: KeyboardEvent<HTMLInputElement>) => {
-
+  const handleNewTest = () => {
+    setParagraph("Loading...")
+    typingStore.generateParagraph()
   }
 
   const RenderParagraph = () => {
@@ -162,8 +136,8 @@ export default observer(function TypingArea() {
         { showStats ?
         <Stats/> : 
         <div onClick={() => { inputRef.current?.focus();  }} className="flex relative items-center justify-center w-1/2 h-1/2">
-          <input ref={inputRef} className="input absolute opacity-0" type="text" onKeyDown={handleKeyDown} onKeyUp={handleKeyUp}/>
-          <motion.div className="caret absolute z-40" ref={caretRef} animate={{ x: caretX, y: caretY, transition: {x: {duration: 0.15}, y: {duration: 0.1}}}}  />
+          <input ref={inputRef} className="input absolute opacity-0" type="text" onKeyDown={handleKeyDown} />
+          <motion.div className="caret bg-white absolute z-40" ref={caretRef} animate={{ x: caretX, y: caretY, transition: {x: {duration: 0.15}, y: {duration: 0.1}}}}  />
           <div className="flex flex-wrap items-center w-full">
             {
               RenderParagraph() 
@@ -171,12 +145,7 @@ export default observer(function TypingArea() {
           </div>
         </div>
         }
-        <Button onClick={() => { 
-          
-          setParagraph("Loading...")  
-          generateParagraph()
-          reset()
-        }} className="absolute bottom-32 mt-4">Reset</Button>
+        <button onClick={handleNewTest} className="btn btn-primary absolute bottom-32 mt-4">Reset</button>
       </div>
     </>
   )

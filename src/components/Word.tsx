@@ -1,17 +1,16 @@
 import { observer } from "mobx-react-lite"
-import { useEffect, useRef, useState } from "react"
+import { useEffect , useState } from "react"
 import { useStore } from "../stores/store"
-import { set } from "mobx"
 
 interface LetterProps {
   l: string
   id: string 
 }
 
-const Letter = observer(({l, id, ...props}: LetterProps)  => {
+const Letter = observer(({l, id}: LetterProps)  => {
   const [correct, setCorrect] = useState("")
   const { typingStore } = useStore()
-  const { typedText, currentLetterIndex, currentWordIndex, key} = typingStore
+  const { typedText, currentLetterIndex, currentWordIndex} = typingStore
 
   useEffect(() => {
     var letterIndex = parseInt(id.split("-")[1])
@@ -43,7 +42,7 @@ const Letter = observer(({l, id, ...props}: LetterProps)  => {
     {
       setCorrect("")
     }
-  }, [currentLetterIndex, currentWordIndex, key])
+  }, [currentLetterIndex, currentWordIndex, typedText])
 
   return (
     <div id={id} className={"bg-transparent text-primary-800 letter " + correct}>{l}</div>
@@ -107,10 +106,6 @@ export default observer(function Word(props: WordProps)
 
   const setErrorCallback = (b: boolean) => {
     setError(b)
-  }
-
-  const setActiveCallback = (b: boolean) => {
-    setActive(b)
   }
 
   const getClassName = () => {

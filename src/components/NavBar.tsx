@@ -1,26 +1,26 @@
-import { Input, Navbar, NavbarBrand, NavbarContent } from "@nextui-org/react";
 
 export default function NavBar() {
   return (
-    <Navbar isBordered className="absolute">
-      <NavbarContent justify="start">
-        <NavbarBrand className="mr-4 text-secondary-700">
-          <h1 className="logo">Open Type </h1>
-        </NavbarBrand>
-      </NavbarContent>
-      <NavbarContent as="div" className="items-center" justify="end">
-        <Input
-          classNames={{
-            base: "max-w-full sm:max-w-[10rem] h-10",
-            mainWrapper: "h-full",
-            input: "text-small",
-            inputWrapper: "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
-          }}
-          placeholder="Type to search..."
-          size="sm"
-          type="search"
-        />
-      </NavbarContent>
-    </Navbar>
+    
+    <div className="navbar absolute bg-base-100">
+      <div className="flex-1">
+        <a className="btn btn-ghost text-xl">OpenType</a>
+      </div>
+      <div className="flex-none">
+        <button className="btn btn-square btn-ghost">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            className="inline-block h-5 w-5 stroke-current">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
   )
 }

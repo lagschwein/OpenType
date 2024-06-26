@@ -1,6 +1,5 @@
 import './App.css'
 import { Outlet, useLocation } from 'react-router-dom'
-import NavBar from './components/NavBar';
 import HomePage from './pages/HomePage';
 
 function App() {
@@ -9,10 +8,7 @@ function App() {
   return (
     <>
       {location.pathname === "/" ? <HomePage /> : 
-      <>
-        <NavBar />
-        <Outlet />
-      </>
+      <Outlet />
       }
     </>
   )

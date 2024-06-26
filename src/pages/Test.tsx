@@ -6,6 +6,7 @@ import { useEffect } from "react"
 import { useStore } from "../stores/store"
 import LoadingComponent from "../components/LoadingComponent"
 import { observer } from "mobx-react-lite"
+import NavBar from "../components/NavBar"
 
 export default observer(function Test() {
   const {typingStore} = useStore()
@@ -17,15 +18,23 @@ export default observer(function Test() {
   }
 
   useEffect(() => {
+    if(!typingStore.ai) return
+    console.log("Test.tsx: useEffect")
     if(!engine) loadEngine(selectedModel, initProgressCallback)
-  }, [engine, loadEngine])
+    typingStore.generateParagraph() 
+  }, [engine])
 
   if(typingStore.loadingEngine) { return <LoadingComponent />}
 
   return (
     <div className="flex flex-col h-screen">
+      {typingStore.startTest ? <></>:
+      <>
+        <NavBar />
+        <Footer />
+      </>
+      }
       <TypingArea />
-      <Footer />
     </div>
   )
 })
