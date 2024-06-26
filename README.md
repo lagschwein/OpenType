@@ -78,6 +78,7 @@ Currently it is very slow and uses webgpu to accelerate the typing test generati
 
 * [![React][React.js]][React-url]
 * [![Tailwindcss][Tailwindcss.com]][Tailwindcss-url]
+* [![DaisyUI][DaisyUI]][DaisyUI-url]
 
 
 
@@ -187,6 +188,8 @@ Project Link: [https://github.com/lagschwein/OpenType](https://github.com/lagsch
 [linkedin-url]: https://linkedin.com/in/linkedin_username
 [product-screenshot]: images/screenshot.png
 [React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
-[Tailwindcss.com]: https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white
 [React-url]: https://reactjs.org/
+[Tailwindcss.com]: https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white
 [Tailwindcss-url]: https://tailwindcss.com/
+[DaisyUI]: https://img.shields.io/badge/daisyui-5A0EF8?style=for-the-badge&logo=daisyui&logoColor=white
+[DaisyUI-url]: https://daisyui.com/
