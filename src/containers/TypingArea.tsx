@@ -121,8 +121,9 @@ export default observer(function TypingArea() {
   }
 
   const handleNewTest = () => {
-    setParagraph("Loading...")
     typingStore.generateParagraph()
+    setShowStats(false)
+    typingStore.reset()
   }
 
   const RenderParagraph = () => {

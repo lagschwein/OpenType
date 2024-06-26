@@ -56,9 +56,9 @@ export default class TypingStore {
     }
   };
   reset = () => {
+    this.updateTypedText("");
     this.updateCurrentLetterIndex(0);
     this.updateCurrentWordIndex(0);
-    this.updateTypedText("");
     this.setError(0);
     this.resetWpms();
     this.resetWpmCorrected();
