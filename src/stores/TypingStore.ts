@@ -6,6 +6,7 @@ import {
   MLCEngine,
 } from "@mlc-ai/web-llm";
 import { router } from "../router/Routes";
+import paragraphGen from "../util/paragraphGen";
 
 export default class TypingStore {
   typedText: string = "";
@@ -41,7 +42,7 @@ export default class TypingStore {
 
   loadEngine = async (
     selectedModel: string = this.selectedModel,
-    initProgressCallback: any | null = null
+    initProgressCallback: any | null = (initProgress: any) => console.log(initProgress)
   ) => {
     this.setLoadingEngine(true);
     try {
@@ -51,6 +52,7 @@ export default class TypingStore {
       this.setEngine(loadedEngine);
       this.setLoadingEngine(false);
     } catch (error) {
+      console.error(error)
       this.setLoadingEngine(false);
       router.navigate("/not-supported");
     }
@@ -64,29 +66,61 @@ export default class TypingStore {
     this.resetWpmCorrected();
   };
 
+  setAI = (ai: boolean) => {
+    this.ai = ai;
+  }
+
   generateParagraph = async () => {
-    if (this.engine) {
-      console.log("Generating paragraph");
+    let paragraph = "";
+    if(this.ai) {
       try {
-        const messages: ChatCompletionMessageParam[] = [
-          { role: "system", content: this.systemPrompt },
-          { role: "user", content: this.userPrompt },
-        ];
-        const reply = await this.engine.chat.completions.create({
-          messages,
-        });
-        this.setParagraph(
-          reply.choices[0].message.content
-            ? reply.choices[0].message.content
-            : "Error"
-        );
-        console.log(reply.choices[0].message.content);
+        if(this.engine)
+        {
+          const messages: ChatCompletionMessageParam[] = [
+            { role: "system", content: this.systemPrompt },
+            { role: "user", content: this.userPrompt },
+          ];
+          paragraph = await this.generateParagraphFromPrompt(messages) 
+        }
+        else
+        {
+          await this.loadEngine()
+          this.generateParagraph()
+        }
       } catch (e) {
         console.log(e);
-        this.loadEngine();
+        await this.loadEngine()
+        this.generateParagraph()
+        return
       }
     }
+    else{
+        paragraph = this.generateRandomParagraph()
+    }
+    this.setParagraph(paragraph);
   };
+
+  private generateRandomParagraph = () => {
+    return paragraphGen();
+  }
+
+  private generateParagraphFromPrompt = async (prompt: ChatCompletionMessageParam[]) => {
+      const reply = await this.engine?.chat.completions.create({
+        messages: prompt,
+      });
+      console.log(reply?.choices[0].message.content);
+      return reply?.choices[0].message.content ?? this.generateRandomParagraph();
+  }
+
+  get currentWpm() {
+    const totalChars = this.typedText.replace(/\s/g, "").length;
+    const totalWords = totalChars / 5;
+    return Math.round(totalWords / ((this.ElapsedTime() / 1000) / 60));
+  }
+
+  get currentWpmCorrected() {
+    return this.currentWpm * (this.accuracy / 100);
+  }
 
   setLoadingEngine = (loading: boolean) => {
     this.loadingEngine = loading;
@@ -108,16 +142,16 @@ export default class TypingStore {
     this.errors = i;
   };
 
-  updateWpms = (i: number, index: number) => {
-    this.wpms[index] = i;
+  updateWpms = (index: number) => {
+    this.wpms[index] = this.currentWpm;
   };
 
   resetWpms = () => {
     this.wpms = [];
   };
 
-  updateWpmCorrected = (i: number, index: number) => {
-    this.wpmCorrected[index] = i;
+  updateWpmCorrected = (index: number) => {
+    this.wpmCorrected[index] = this.currentWpmCorrected;
   };
 
   resetWpmCorrected = () => {

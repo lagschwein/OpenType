@@ -20,7 +20,6 @@ export default observer(function TypingArea() {
   const [flashing, setFlashing] = useState(true)
 
   useEffect(() => {
-    console.log(`word: ${currentWordIndex} letter: ${currentLetterIndex}`)
     inputRef.current?.focus()
 
     flashing ? animate(caretRef.current,  {opacity: [0, 1, 0]}, {duration: 1, repeat: Infinity}) : animate(caretRef.current, {opacity: 1})
@@ -111,7 +110,6 @@ export default observer(function TypingArea() {
     }
     else if(standardKeys.includes(e.key))
     {
-      console.log(e.key)
       if(!startTest)
       {
         StartTest()
@@ -122,16 +120,16 @@ export default observer(function TypingArea() {
   }
 
   const handleNewTest = () => {
+    StopTest()
     typingStore.generateParagraph()
     setShowStats(false)
     typingStore.reset()
-    typingStore.setParagraph(paragraphGen())
   }
 
   const RenderParagraph = () => {
     return paragraph.split(" ").map((word, index) => {
       const typedWord = typedText.split(" ")[index] ?? ""
-      return <Word key={`${index}`} id={`${index}`} letters={word} typedWord={typedWord}/>
+      return <Word key={`${index}`} id={`${index}`} letters={word} typedWord={typedWord} active={currentWordIndex === index}/>
     }
     )
   }
@@ -142,17 +140,21 @@ export default observer(function TypingArea() {
       <div id="InputWrapper" className="flex flex-col items-center justify-center h-full">
         { showStats ?
         <Stats/> : 
-        <div onClick={() => { inputRef.current?.focus();  }} className="flex relative items-center justify-center w-1/2 h-1/2">
-          <input ref={inputRef} className="input absolute opacity-0" type="text" onKeyDown={handleKeyDown} />
-          <motion.div className="caret bg-white absolute z-40" ref={caretRef} animate={{ x: caretX, y: caretY, transition: {x: {duration: 0.15}, y: {duration: 0.1}}}}  />
-          <div className="flex flex-wrap items-center w-full">
-            {
-              RenderParagraph() 
-            }
+        <>
+          <div onClick={() => { inputRef.current?.focus();  }} className="flex relative items-center justify-center w-1/2 h-1/2">
+            <input ref={inputRef} className="input absolute opacity-0" type="text" onKeyDown={handleKeyDown} />
+            <motion.div className="caret bg-white absolute z-40" ref={caretRef} animate={{ x: caretX, y: caretY, transition: {x: {duration: 0.15}, y: {duration: 0.1}}}}  />
+            <div className="flex flex-wrap items-center w-full">
+              {
+                RenderParagraph() 
+              }
+            </div>
           </div>
-        </div>
+        </>
         }
-        <button onClick={handleNewTest} className="btn btn-primary absolute bottom-32 mt-4">Reset</button>
+        <button onClick={handleNewTest} className="btn btn-ghost btn-circle btn-xs sm:btn-sm md:btn-md lg:btn-lg bottom-32 mt-4">
+          <svg width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -5v5h5" />  <path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 5v-5h-5" /></svg>
+        </button>
       </div>
     </>
   )

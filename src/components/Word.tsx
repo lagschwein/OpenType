@@ -57,41 +57,49 @@ const Letter = memo(observer(({l, id, correct}: LetterProps)  => {
 interface WordProps {
   letters: string
   id: string | undefined
-  typedWord: string
+  typedWord: string | null
+  active: boolean
 }
 
 export default memo(observer(function Word(props: WordProps) 
 {
-  const [active, setActive] = useState(false)
   const [error, setError] = useState(false)
   const { typingStore } = useStore()
-  const { currentWordIndex } = typingStore
+  const {updateWpmCorrected, updateWpms } = typingStore
 
+  // useEffect(() => {
+    
+  //   if (props.id === undefined) return
+  //   if(props.id === `${currentWordIndex}`) {
+  //     setActive(true)
+  //     setError(false)
+  //   } else {
+  //     if(active)
+  //     {
+  //       checkErrors()
+  //     }
+  //     setActive(false)
+  //   }
+
+  //   if(props.id > `${currentWordIndex}`) {
+  //     setActive(false)
+  //     setError(false)
+  //   }
+
+
+  // }, [currentWordIndex])
   useEffect(() => {
-    if (props.id === undefined) return
-    if(props.id === `${currentWordIndex}`) {
-      setActive(true)
-      setError(false)
-    } else {
-      if(active)
-      {
-        checkErrors()
-      }
-      setActive(false)
+    if(!props.typedWord && props.typedWord === ""){
+      setErrorCallback(false)
+      return
     }
-
-    if(props.id > `${currentWordIndex}`) {
-      setActive(false)
-      setError(false)
-    }
-
-
-  }, [currentWordIndex])
+    checkErrors()
+  },[props.active])
 
   const checkErrors = () => {
     // check typed word against paragraph
-    // updateWpms(calculateCurrentWpm(), currentWordIndex)
-    // updateWpmCorrected(calculateCurrentWpm()*(accuracy/100), currentWordIndex)
+    updateWpms(typingStore.currentWordIndex)
+    updateWpmCorrected(typingStore.currentWordIndex)
     if (props.typedWord !== props.letters){
       // updateErrors()
       setErrorCallback(true)
@@ -102,43 +110,32 @@ export default memo(observer(function Word(props: WordProps)
     }
   }
 
-  // const calculateCurrentWpm = () => {
-  //   const totalChars = typedText.replace(/\s/g, "").length;
-  //   const totalWords = totalChars / 5;
-  //   return Math.round(totalWords / ((ElapsedTime() / 1000)/60))
-  // }
-
   const setErrorCallback = (b: boolean) => {
     setError(b)
   }
 
   const getClassName = () => {
     var classname = "word border-b-2 border-transparent"
-    if(active) {classname += " active"}
+    if(props.active) {classname += " active"}
     if(error) {classname += " !border-red-500 error"}
 
     return classname
   }
 
   const isLetterCorrect = (letter: string, typedLetter: string) => {
-
-    if(!typedLetter || typedLetter === "") 
-    {
-      return "" 
-    }
-
+    if(!typedLetter) return ""
     if(letter === typedLetter) {
       return "text-primary"
     } else {
       return "text-error"
     }
   }
-    
 
+    
   return (
     <div id={props.id} className={getClassName()}>
       {props.letters.split("").map((l, index) => {
-        const correct = isLetterCorrect(l, props.typedWord[index])
+        const correct = props.typedWord ? isLetterCorrect(l, props.typedWord[index]) : ""
         return <Letter key={`${props.id}-${index}`} id={`${props.id}-${index}`} l={l} correct={correct}/>
       })}
     </div>

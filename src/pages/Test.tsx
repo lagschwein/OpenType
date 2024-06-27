@@ -11,23 +11,10 @@ import paragraphGen from "../util/paragraphGen"
 
 export default observer(function Test() {
   const {typingStore} = useStore()
-  const {loadEngine, selectedModel, engine} = typingStore
-
-
-  const initProgressCallback = (initProgress: InitProgressReport) => {
-    console.log(initProgress)
-  }
 
   useEffect(() => {
-    if(!typingStore.ai)
-    {
-      typingStore.setParagraph(paragraphGen()) 
-      return
-    } 
-    console.log("Test.tsx: useEffect")
-    if(!engine) loadEngine(selectedModel, initProgressCallback)
-    typingStore.generateParagraph() 
-  }, [engine])
+    typingStore.generateParagraph()
+  }, [])
 
   if(typingStore.loadingEngine) { return <LoadingComponent />}
 

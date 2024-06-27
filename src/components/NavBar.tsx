@@ -1,11 +1,22 @@
+import { useStore } from "../stores/store";
 
 export default function NavBar() {
+  const { typingStore } = useStore();
+
   return (
     
     <div className="navbar absolute bg-base-100">
       <div className="flex-1">
         <a className="btn btn-ghost text-xl">OpenType</a>
       </div>
+
+      <div className="form-control">
+        <label className="label cursor-pointer space-x-2">
+          <span className="label-text">AI</span>
+          <input type="checkbox" className="toggle" defaultChecked={typingStore.ai} onChange={() => {typingStore.setAI(!typingStore.ai)}}/>
+        </label>
+      </div>
+
       <div className="flex-none">
         <button className="btn btn-square btn-ghost">
           <svg
