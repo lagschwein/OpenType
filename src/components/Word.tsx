@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite"
-import { memo, useCallback, useEffect , useState } from "react"
+import { memo, useEffect , useState } from "react"
 import { useStore } from "../stores/store"
 
 interface LetterProps {
@@ -10,44 +10,10 @@ interface LetterProps {
 
 const Letter = memo(observer(({l, id, correct}: LetterProps)  => {
   const [style, setStyle] = useState("")
-  // const { typingStore } = useStore()
-  // const { typedText, currentLetterIndex, currentWordIndex} = typingStore
 
-  useEffect(() => {setStyle(correct)}, [correct])
-  // useEffect(() => {
-  //   const [wordIndex, letterIndex] = id.split("-").map((i) => parseInt(i))
-  //   console.log(`I am letter ${letterIndex} in word ${wordIndex}`)
-  //   var actualWord = typingStore.paragraph.split(" ")[wordIndex]
-  //   var typedWord = typedText.split(" ")[wordIndex]
-  //   var currentLetter = currentLetterIndex -1
-    
-
-  //   if(!typedWord || typedWord === "") 
-  //   {
-  //     setCorrect("")
-  //     return
-  //   }
-
-  //   if(currentLetter < 0) currentLetter = 0 
-  //   if(wordIndex === currentWordIndex) {
-  //     if(letterIndex > currentLetter)
-  //     {
-  //       setCorrect("")
-  //     }
-  //     else
-  //     {
-  //       if(actualWord[letterIndex] === typedWord[letterIndex]) {
-  //         setCorrect("text-primary")
-  //       } else {
-  //         setCorrect("text-error")
-  //       }
-  //     }
-  //   }
-  //   else if (wordIndex > currentWordIndex)
-  //   {
-  //     setCorrect("")
-  //   }
-  // }, [typedText])
+  useEffect(() => {
+    setStyle(correct)
+  }, [correct])
 
   return (
     <div id={id} className={"bg-transparent letter " + style}>{l}</div>
@@ -67,30 +33,9 @@ export default memo(observer(function Word(props: WordProps)
   const { typingStore } = useStore()
   const {updateWpmCorrected, updateWpms } = typingStore
 
-  // useEffect(() => {
-    
-  //   if (props.id === undefined) return
-  //   if(props.id === `${currentWordIndex}`) {
-  //     setActive(true)
-  //     setError(false)
-  //   } else {
-  //     if(active)
-  //     {
-  //       checkErrors()
-  //     }
-  //     setActive(false)
-  //   }
-
-  //   if(props.id > `${currentWordIndex}`) {
-  //     setActive(false)
-  //     setError(false)
-  //   }
-
-
-  // }, [currentWordIndex])
   useEffect(() => {
     if(!props.typedWord && props.typedWord === ""){
-      setErrorCallback(false)
+      setError(false)
       return
     }
     checkErrors()
@@ -102,16 +47,12 @@ export default memo(observer(function Word(props: WordProps)
     updateWpmCorrected(typingStore.currentWordIndex)
     if (props.typedWord !== props.letters){
       // updateErrors()
-      setErrorCallback(true)
+      setError(true)
     }
     else
     {
-      setErrorCallback(false)
+      setError(false)
     }
-  }
-
-  const setErrorCallback = (b: boolean) => {
-    setError(b)
   }
 
   const getClassName = () => {
@@ -131,7 +72,6 @@ export default memo(observer(function Word(props: WordProps)
     }
   }
 
-    
   return (
     <div id={props.id} className={getClassName()}>
       {props.letters.split("").map((l, index) => {
