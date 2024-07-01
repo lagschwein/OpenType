@@ -1,10 +1,30 @@
 import { useStore } from "../stores/store";
 import { observer } from "mobx-react-lite";
-import { motion, useAnimate } from "framer-motion";
+import { animate, delay, motion, stagger, useAnimate } from "framer-motion";
 import { KeyboardEvent, useEffect, useRef, useState } from "react";
 import Word from "../components/Word";
 import Stats from "./Stats";
 import standardKeys from "../util/keys";
+
+// Loading animation
+function useLoadingAnimation() {
+  const [scope, animate] = useAnimate()
+  useEffect(() => {
+    animate(
+      ".letter",
+      {
+        opacity: [0, 1],
+        y: [10, 0],
+      },
+      {
+        duration: 0.5,
+        delay: stagger(0.1),
+        ease: "easeInOut",
+      }
+    )
+  })
+  return scope
+}
 
 export default observer(function TypingArea() {
   const { typingStore } = useStore();
@@ -17,6 +37,7 @@ export default observer(function TypingArea() {
   const [caretY, setCaretY] = useState(0)
   const [caretRef, animate] = useAnimate();
   const [flashing, setFlashing] = useState(true)
+
 
   useEffect(() => {
     inputRef.current?.focus()
@@ -110,6 +131,27 @@ export default observer(function TypingArea() {
   }
 
   const RenderParagraph = () => {
+    if(typingStore.loadingPrompt) {
+      // loading animation
+      const scopeLoading = useLoadingAnimation()
+      let loadingtext = "loading test ..."
+      return (
+      <div ref={scopeLoading}>
+        {loadingtext.split(" ").map((word) => {
+          return (
+          <div className="word"> 
+            {
+              word.split("").map((letter) => {
+                return <div className="letter">{letter}</div>
+              })
+            } 
+           </div>
+          )
+        })}
+      </div>
+      )
+    }
+
     return paragraph.split(" ").map((word, index) => {
       const typedWord = typedText.split(" ")[index] ?? ""
       return <Word key={`${index}`} id={`${index}`} letters={word} typedWord={typedWord} active={currentWordIndex === index} />
@@ -126,7 +168,7 @@ export default observer(function TypingArea() {
           <>
             <div onClick={() => { inputRef.current?.focus(); }} className="flex relative items-center justify-center w-1/2 h-1/2">
               <input ref={inputRef} className="input absolute opacity-0" type="text" onKeyDown={handleKeyDown} />
-              <motion.div className="caret bg-white absolute z-40" ref={caretRef} animate={{ x: caretX, y: caretY, transition: { x: { duration: 0.15 }, y: { duration: 0.1 } } }} />
+              {!typingStore.loadingPrompt && <motion.div className="caret bg-white absolute z-40" ref={caretRef} animate={{ x: caretX, y: caretY, transition: { x: { duration: 0.15 }, y: { duration: 0.1 } } }} />}
               <div className="flex flex-wrap items-center w-full">
                 {
                   RenderParagraph()

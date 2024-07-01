@@ -10,7 +10,6 @@ import paragraphGen from "../util/paragraphGen";
 
 export default class TypingStore {
   typedText: string = "";
-  // paragraph: string = "GitHub Copilot, an AI programming assistant, helps developers by providing suggestions for code completion, generating unit tests, proposing fixes for code issues, explaining how selected code works, creating new Jupyter Notebooks, finding relevant code, and answering general programming questions, thereby enhancing productivity and code quality.";
   paragraph: string = "This is a typing test.";
   currentWordIndex: number = 0;
   currentLetterIndex: number = 0;
@@ -20,13 +19,14 @@ export default class TypingStore {
   wpms: number[] = [];
   wpmCorrected: number[] = [];
   loadingEngine: boolean = false;
+  loadingPrompt: boolean = false;
   ai: boolean = false;
   engine: MLCEngine | null = null;
-  selectedModel: string = "Qwen2-1.5B-Instruct-q4f16_1-MLC";
+  selectedModel: string = "Qwen2-0.5B-Instruct-q0f16-MLC";
   userPrompt: string =
     "A 20-50 word sentence that is in the form of a famous quote";
   systemPrompt: string =
-    "You are a generative ai thats role is to generate text for a typing test. Do not preface your answer with anything. The only output returned should be the generated sentence for the typing test. The sentence should be coherent and make sense.";
+    "You are a generative ai thats role is to generate text for a typing test. Do not preface your answer with anything. The only output returned should be the generated sentence for the typing test. The sentence should be coherent and make sense. If asked for a quote do not surround the quote with quotation marks only give the text of the quote itself.";
 
   constructor() {
     makeAutoObservable(this);
@@ -105,11 +105,19 @@ export default class TypingStore {
   }
 
   private generateParagraphFromPrompt = async (prompt: ChatCompletionMessageParam[]) => {
+    this.loadingPrompt = true;
+    try {
       const reply = await this.engine?.chat.completions.create({
         messages: prompt,
       });
       console.log(reply?.choices[0].message.content);
+      this.loadingPrompt = false;
       return reply?.choices[0].message.content ?? this.generateRandomParagraph();
+    } catch (error) {
+      this.loadingPrompt = false;
+      console.error(error);
+      return this.generateRandomParagraph();
+    }
   }
 
   get currentWpm() {
