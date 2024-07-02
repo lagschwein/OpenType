@@ -14,7 +14,7 @@ export default observer(function Test() {
     typingStore.generateParagraph()
   }, [])
 
-  if (typingStore.loadingEngine) { return <LoadingComponent /> }
+  if (typingStore.loadingEngine) { return <div className="flex items-center justify-center h-screen"><LoadingComponent /></div> }
 
   return (
     <div className="flex flex-col h-screen">
