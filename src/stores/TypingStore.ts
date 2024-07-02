@@ -28,6 +28,9 @@ export default class TypingStore {
   systemPrompt: string =
     "You are a generative ai thats role is to generate text for a typing test. Do not preface your answer with anything. The only output returned should be the generated sentence for the typing test. The sentence should be coherent and make sense. If asked for a quote do not surround the quote with quotation marks only give the text of the quote itself.";
 
+  // caret flashing animation
+  flashing: boolean = true;
+
   constructor() {
     makeAutoObservable(this);
   }
@@ -57,6 +60,7 @@ export default class TypingStore {
       router.navigate("/not-supported");
     }
   };
+
   reset = () => {
     this.updateTypedText("");
     this.updateCurrentLetterIndex(0);
@@ -68,6 +72,10 @@ export default class TypingStore {
 
   setAI = (ai: boolean) => {
     this.ai = ai;
+  }
+
+  setFlashing = (flashing: boolean) => {
+    this.flashing = flashing;
   }
 
   generateParagraph = async () => {
