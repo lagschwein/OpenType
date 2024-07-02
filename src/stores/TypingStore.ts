@@ -2,8 +2,8 @@ import { makeAutoObservable } from "mobx";
 import StopWatch from "../util/Timer";
 import {
   ChatCompletionMessageParam,
-  CreateMLCEngine,
-  MLCEngine,
+  CreateWebWorkerMLCEngine,
+  WebWorkerMLCEngine,
 } from "@mlc-ai/web-llm";
 import { router } from "../router/Routes";
 import paragraphGen from "../util/paragraphGen";
@@ -21,8 +21,9 @@ export default class TypingStore {
   loadingEngine: boolean = false;
   loadingPrompt: boolean = false;
   ai: boolean = false;
-  engine: MLCEngine | null = null;
+  engine: WebWorkerMLCEngine | null = null;
   selectedModel: string = "Qwen2-0.5B-Instruct-q0f16-MLC";
+  // selectedModel: string = "Llama-3-8B-Instruct-q4f32_1-MLC"
   userPrompt: string =
     "A 20-50 word sentence that is in the form of a famous quote";
   systemPrompt: string =
@@ -47,15 +48,20 @@ export default class TypingStore {
     selectedModel: string = this.selectedModel,
     initProgressCallback: any | null = (initProgress: any) => console.log(initProgress)
   ) => {
-    this.setLoadingEngine(true);
+    // this.setLoadingEngine(true);
     try {
-      const loadedEngine = await CreateMLCEngine(selectedModel, {
+      const loadedEngine = await CreateWebWorkerMLCEngine(
+        new Worker(
+          new URL("../util/worker.ts", import.meta.url),
+          {type: "module"}
+        ),
+        selectedModel, {
         initProgressCallback: initProgressCallback,
       });
       this.setEngine(loadedEngine);
       this.setLoadingEngine(false);
     } catch (error) {
-      console.error(error)
+      console.error("Couldn't load engine", error)
       this.setLoadingEngine(false);
       router.navigate("/not-supported");
     }
@@ -146,7 +152,7 @@ export default class TypingStore {
     this.userPrompt = this.userPrompt + prompt;
   };
 
-  setEngine = (engine: MLCEngine) => {
+  setEngine = (engine: WebWorkerMLCEngine) => {
     this.engine = engine;
   };
 

@@ -2,7 +2,7 @@ import { ServiceWorkerMLCEngineHandler } from "@mlc-ai/web-llm";
 
 let handler: ServiceWorkerMLCEngineHandler;
 
-self.addEventListener("activate", function (event) {
+self.addEventListener("activate", function () {
   handler = new ServiceWorkerMLCEngineHandler();
-  console.log("Service worker is ready");
+  console.log("Web-LLM Service Worker Activated");
 })
