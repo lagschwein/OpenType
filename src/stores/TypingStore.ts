@@ -7,6 +7,7 @@ import {
 } from "@mlc-ai/web-llm";
 import { router } from "../router/Routes";
 import paragraphGen from "../util/paragraphGen";
+import { systemPrompt } from "../util/systemPrompt";
 
 export default class TypingStore {
   typedText: string = "";
@@ -24,10 +25,7 @@ export default class TypingStore {
   engine: WebWorkerMLCEngine | null = null;
   selectedModel: string = "Qwen2-0.5B-Instruct-q0f16-MLC";
   // selectedModel: string = "Llama-3-8B-Instruct-q4f32_1-MLC"
-  userPrompt: string =
-    "A 20-50 word sentence that is in the form of a famous quote";
-  systemPrompt: string =
-    "You are a generative ai thats role is to generate text for a typing test. Do not preface your answer with anything. The only output returned should be the generated sentence for the typing test. The sentence should be coherent and make sense. If asked for a quote do not surround the quote with quotation marks only give the text of the quote itself.";
+  userPrompt: string = ""
 
   // caret flashing animation
   flashing: boolean = true;
@@ -91,7 +89,7 @@ export default class TypingStore {
         if(this.engine)
         {
           const messages: ChatCompletionMessageParam[] = [
-            { role: "system", content: this.systemPrompt },
+            { role: "system", content: systemPrompt },
             { role: "user", content: this.userPrompt },
           ];
           paragraph = await this.generateParagraphFromPrompt(messages) 
@@ -141,6 +139,7 @@ export default class TypingStore {
   }
 
   get currentWpmCorrected() {
+    console.log(`Accuracy: ${this.accuracy}`)
     return this.currentWpm * (this.accuracy / 100);
   }
 
@@ -154,10 +153,6 @@ export default class TypingStore {
 
   setEngine = (engine: WebWorkerMLCEngine) => {
     this.engine = engine;
-  };
-
-  updateErrors = () => {
-    this.errors = this.errors + 1;
   };
 
   setError = (i: number) => {
