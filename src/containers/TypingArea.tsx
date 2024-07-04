@@ -1,42 +1,26 @@
 import { useStore } from "../stores/store";
 import { observer } from "mobx-react-lite";
-import { motion, useAnimate } from "framer-motion";
 import { KeyboardEvent, useEffect, useRef, useState } from "react";
 import Word from "../components/Word";
 import Stats from "./Stats";
 import standardKeys from "../util/keys";
+import Caret from "../components/Caret";
+import LoadingComponent from "../components/LoadingComponent";
+
+// Loading animation
 
 export default observer(function TypingArea() {
   const { typingStore } = useStore();
-  var { typedText, updateTypedText, paragraph, currentLetterIndex, updateCurrentLetterIndex, currentWordIndex, updateCurrentWordIndex, StartTest, StopTest, startTest } = typingStore;
+  var { typedText, updateTypedText, paragraph, currentLetterIndex, updateCurrentLetterIndex, currentWordIndex, updateCurrentWordIndex, StartTest, StopTest, startTest, setFlashing } = typingStore;
   const inputRef = useRef<HTMLInputElement>(null);
   const [showStats, setShowStats] = useState(false)
-
-  // Caret animation
-  const [caretX, setCaretX] = useState(0)
-  const [caretY, setCaretY] = useState(0)
-  const [caretRef, animate] = useAnimate();
-  const [flashing, setFlashing] = useState(true)
 
   useEffect(() => {
     inputRef.current?.focus()
 
-    flashing ? animate(caretRef.current, { opacity: [0, 1, 0] }, { duration: 1, repeat: Infinity }) : animate(caretRef.current, { opacity: 1 })
-
     //Check if we are at the end of the paragraph
     if (currentWordIndex > (paragraph.split(" ").length - 1)) {
       finishTest();
-    }
-
-    var element = document.getElementById(`${currentWordIndex}-${currentLetterIndex}`)
-    if (element == null) {
-      // Next word
-      element = document.getElementById(`${currentWordIndex}`)
-      element ? updateCaretPosition(element.offsetLeft + element.offsetWidth, element.offsetTop - 2) : element
-    }
-    else {
-      // Next letter
-      element ? updateCaretPosition(element.offsetLeft, element.offsetTop - 2) : element
     }
   }, [typedText, paragraph])
 
@@ -49,14 +33,6 @@ export default observer(function TypingArea() {
     }
 
   }, [startTest])
-
-  const updateCaretPosition = (offsetX: number, offsetY: number) => {
-    var caretElement: HTMLDivElement | null = caretRef.current
-    if (caretElement) {
-      setCaretX(offsetX - caretElement.offsetLeft)
-      setCaretY(offsetY - caretElement.offsetTop)
-    }
-  }
 
   const finishTest = () => {
     StopTest()
@@ -110,6 +86,8 @@ export default observer(function TypingArea() {
   }
 
   const RenderParagraph = () => {
+    if (typingStore.loadingPrompt) 
+      return <></> 
     return paragraph.split(" ").map((word, index) => {
       const typedWord = typedText.split(" ")[index] ?? ""
       return <Word key={`${index}`} id={`${index}`} letters={word} typedWord={typedWord} active={currentWordIndex === index} />
@@ -126,9 +104,9 @@ export default observer(function TypingArea() {
           <>
             <div onClick={() => { inputRef.current?.focus(); }} className="flex relative items-center justify-center h-1/2">
               <input ref={inputRef} className="input absolute opacity-0" type="text" onKeyDown={handleKeyDown} />
-              <motion.div className="caret bg-white absolute z-40" ref={caretRef} animate={{ x: caretX, y: caretY, transition: { x: { duration: 0.15 }, y: { duration: 0.1 } } }} />
-              <div className="flex flex-wrap max-h-[100px] items-center w-full text-2xl overflow-scroll no-scrollbar">
-                  {RenderParagraph()}
+              {!typingStore.loadingPrompt && <Caret/>}
+              <div className="flex flex-wrap items-center w-full">
+                { !typingStore.loadingPrompt ? RenderParagraph() : <LoadingComponent/>}
               </div>
             </div>
           </>

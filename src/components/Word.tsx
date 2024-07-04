@@ -29,53 +29,62 @@ interface WordProps {
 
 export default memo(observer(function Word(props: WordProps) 
 {
-  const [error, setError] = useState(false)
+  const [wordError, setWordError] = useState(false)
   const { typingStore } = useStore()
-  const {updateWpmCorrected, updateWpms } = typingStore
+  const {updateWpmCorrected, updateWpms, setError} = typingStore
 
   useEffect(() => {
     if(!props.typedWord && props.typedWord === ""){
-      setError(false)
+      setWordError(false)
       return
     }
     checkErrors()
   },[props.active])
+
+  useEffect(() => {
+    props.letters.split("").map((l, index) => {
+      if(!props.typedWord) return
+      const typedLetter = props.typedWord[index]
+      if (typedLetter && !isLetterCorrect(l, typedLetter)) setError(typingStore.errors + 1)   
+    })
+  }, [props.typedWord])
 
   const checkErrors = () => {
     // check typed word against paragraph
     updateWpms(typingStore.currentWordIndex)
     updateWpmCorrected(typingStore.currentWordIndex)
     if (props.typedWord !== props.letters){
-      // updateErrors()
-      setError(true)
+      setError(typingStore.errors + 1)
+      setWordError(true)
     }
     else
     {
-      setError(false)
+      setWordError(false)
     }
   }
 
   const getClassName = () => {
     var classname = "word border-b-2 border-transparent"
     if(props.active) {classname += " active"}
-    if(error) {classname += " !border-red-500 error"}
+    if(wordError) {classname += " !border-red-500 error"}
 
     return classname
   }
 
   const isLetterCorrect = (letter: string, typedLetter: string) => {
-    if(!typedLetter) return ""
     if(letter === typedLetter) {
-      return "text-primary"
+      return true 
     } else {
-      return "text-error"
+      return false 
     }
   }
 
   return (
     <div id={props.id} className={getClassName()}>
       {props.letters.split("").map((l, index) => {
-        const correct = props.typedWord ? isLetterCorrect(l, props.typedWord[index]) : ""
+        let correct = ""
+        if(props.typedWord && props.typedWord[index] && props.typedWord[index] !== "") 
+          correct = isLetterCorrect(l, props.typedWord[index]) ? "text-primary": "text-error"
         return <Letter key={`${props.id}-${index}`} id={`${props.id}-${index}`} l={l} correct={correct}/>
       })}
     </div>

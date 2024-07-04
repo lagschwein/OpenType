@@ -2,15 +2,15 @@ import { makeAutoObservable } from "mobx";
 import StopWatch from "../util/Timer";
 import {
   ChatCompletionMessageParam,
-  CreateMLCEngine,
-  MLCEngine,
+  CreateWebWorkerMLCEngine,
+  WebWorkerMLCEngine,
 } from "@mlc-ai/web-llm";
 import { router } from "../router/Routes";
 import paragraphGen from "../util/paragraphGen";
+import { systemPrompt } from "../util/systemPrompt";
 
 export default class TypingStore {
   typedText: string = "";
-  // paragraph: string = "GitHub Copilot, an AI programming assistant, helps developers by providing suggestions for code completion, generating unit tests, proposing fixes for code issues, explaining how selected code works, creating new Jupyter Notebooks, finding relevant code, and answering general programming questions, thereby enhancing productivity and code quality.";
   paragraph: string = "This is a typing test.";
   currentWordIndex: number = 0;
   currentLetterIndex: number = 0;
@@ -20,13 +20,15 @@ export default class TypingStore {
   wpms: number[] = [];
   wpmCorrected: number[] = [];
   loadingEngine: boolean = false;
+  loadingPrompt: boolean = false;
   ai: boolean = false;
-  engine: MLCEngine | null = null;
-  selectedModel: string = "Qwen2-1.5B-Instruct-q4f16_1-MLC";
-  userPrompt: string =
-    "A 20-50 word sentence that is in the form of a famous quote";
-  systemPrompt: string =
-    "You are a generative ai thats role is to generate text for a typing test. Do not preface your answer with anything. The only output returned should be the generated sentence for the typing test. The sentence should be coherent and make sense.";
+  engine: WebWorkerMLCEngine | null = null;
+  selectedModel: string = "Qwen2-0.5B-Instruct-q0f16-MLC";
+  // selectedModel: string = "Llama-3-8B-Instruct-q4f32_1-MLC"
+  userPrompt: string = ""
+
+  // caret flashing animation
+  flashing: boolean = true;
 
   constructor() {
     makeAutoObservable(this);
@@ -44,19 +46,25 @@ export default class TypingStore {
     selectedModel: string = this.selectedModel,
     initProgressCallback: any | null = (initProgress: any) => console.log(initProgress)
   ) => {
-    this.setLoadingEngine(true);
+    // this.setLoadingEngine(true);
     try {
-      const loadedEngine = await CreateMLCEngine(selectedModel, {
+      const loadedEngine = await CreateWebWorkerMLCEngine(
+        new Worker(
+          new URL("../util/worker.ts", import.meta.url),
+          {type: "module"}
+        ),
+        selectedModel, {
         initProgressCallback: initProgressCallback,
       });
       this.setEngine(loadedEngine);
       this.setLoadingEngine(false);
     } catch (error) {
-      console.error(error)
+      console.error("Couldn't load engine", error)
       this.setLoadingEngine(false);
       router.navigate("/not-supported");
     }
   };
+
   reset = () => {
     this.updateTypedText("");
     this.updateCurrentLetterIndex(0);
@@ -70,6 +78,10 @@ export default class TypingStore {
     this.ai = ai;
   }
 
+  setFlashing = (flashing: boolean) => {
+    this.flashing = flashing;
+  }
+
   generateParagraph = async () => {
     let paragraph = "";
     if(this.ai) {
@@ -77,7 +89,7 @@ export default class TypingStore {
         if(this.engine)
         {
           const messages: ChatCompletionMessageParam[] = [
-            { role: "system", content: this.systemPrompt },
+            { role: "system", content: systemPrompt },
             { role: "user", content: this.userPrompt },
           ];
           paragraph = await this.generateParagraphFromPrompt(messages) 
@@ -105,11 +117,19 @@ export default class TypingStore {
   }
 
   private generateParagraphFromPrompt = async (prompt: ChatCompletionMessageParam[]) => {
+    this.loadingPrompt = true;
+    try {
       const reply = await this.engine?.chat.completions.create({
         messages: prompt,
       });
       console.log(reply?.choices[0].message.content);
+      this.loadingPrompt = false;
       return reply?.choices[0].message.content ?? this.generateRandomParagraph();
+    } catch (error) {
+      this.loadingPrompt = false;
+      console.error(error);
+      return this.generateRandomParagraph();
+    }
   }
 
   get currentWpm() {
@@ -119,6 +139,7 @@ export default class TypingStore {
   }
 
   get currentWpmCorrected() {
+    console.log(`Accuracy: ${this.accuracy}`)
     return this.currentWpm * (this.accuracy / 100);
   }
 
@@ -130,12 +151,8 @@ export default class TypingStore {
     this.userPrompt = this.userPrompt + prompt;
   };
 
-  setEngine = (engine: MLCEngine) => {
+  setEngine = (engine: WebWorkerMLCEngine) => {
     this.engine = engine;
-  };
-
-  updateErrors = () => {
-    this.errors = this.errors + 1;
   };
 
   setError = (i: number) => {
