@@ -120,17 +120,15 @@ export default observer(function TypingArea() {
 
   return (
     <>
-      <div id="InputWrapper" className="flex flex-col items-center justify-center h-full">
+      <div id="InputWrapper" className="flex flex-col items-center justify-center h-full w-3/4">
         {showStats ?
           <Stats /> :
           <>
-            <div onClick={() => { inputRef.current?.focus(); }} className="flex relative items-center justify-center w-1/2 h-1/2">
+            <div onClick={() => { inputRef.current?.focus(); }} className="flex relative items-center justify-center h-1/2">
               <input ref={inputRef} className="input absolute opacity-0" type="text" onKeyDown={handleKeyDown} />
               <motion.div className="caret bg-white absolute z-40" ref={caretRef} animate={{ x: caretX, y: caretY, transition: { x: { duration: 0.15 }, y: { duration: 0.1 } } }} />
-              <div className="flex flex-wrap items-center w-full">
-                {
-                  RenderParagraph()
-                }
+              <div className="flex flex-wrap max-h-[100px] items-center w-full text-2xl overflow-scroll no-scrollbar">
+                  {RenderParagraph()}
               </div>
             </div>
           </>

@@ -28,6 +28,7 @@
   display: inline;
   line-height: 1em;
   margin: 2px;
+  margin-right: 6px
 }
 
 .incorrect {
@@ -36,4 +37,13 @@
 
 .correct {
   color: hsl(var(--nextui-primary-600));
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

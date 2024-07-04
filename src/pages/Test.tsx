@@ -17,14 +17,16 @@ export default observer(function Test() {
   if (typingStore.loadingEngine) { return <LoadingComponent /> }
 
   return (
-    <div className="flex flex-col h-screen">
+    <div className="grid grid-row-3 h-screen justify-items-center">
       {typingStore.startTest ? <></> :
         <>
           <NavBar />
-          <Footer />
         </>
       }
       <TypingArea />
+      {typingStore.startTest ? <></> :
+      <Footer />
+      }
     </div>
   )
 })
