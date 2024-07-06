@@ -26,12 +26,24 @@ export default class TypingStore {
   selectedModel: string = "Qwen2-0.5B-Instruct-q0f16-MLC";
   // selectedModel: string = "Llama-3-8B-Instruct-q4f32_1-MLC"
   userPrompt: string = ""
+  caretX: number = 0
+  caretY: number = 0
 
   // caret flashing animation
   flashing: boolean = true;
 
   constructor() {
     makeAutoObservable(this);
+  }
+
+  // Caret
+  setCaretX = (x: number) => {
+    this.caretX = x;
+  }
+
+  setCaretY = (y: number) => {
+    console.log("Setting Y: ", y)
+    this.caretY = y;
   }
 
   get accuracy(): number {

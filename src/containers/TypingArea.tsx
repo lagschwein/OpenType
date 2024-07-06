@@ -14,6 +14,7 @@ export default observer(function TypingArea() {
   var { typedText, updateTypedText, paragraph, currentLetterIndex, updateCurrentLetterIndex, currentWordIndex, updateCurrentWordIndex, StartTest, StopTest, startTest, setFlashing } = typingStore;
   const inputRef = useRef<HTMLInputElement>(null);
   const [showStats, setShowStats] = useState(false)
+  const scrollRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     inputRef.current?.focus()
@@ -33,6 +34,14 @@ export default observer(function TypingArea() {
     }
 
   }, [startTest])
+  
+  useEffect(() => {
+    if (typingStore.caretY > -2) {
+      const element = document.getElementById(`${currentWordIndex-1}`)?? document.getElementById(`${currentWordIndex}`)
+      if(!element) return
+      scrollRef.current?.scrollBy({top: element.offsetHeight+8, behavior: "smooth"})
+    }
+  }, [typingStore.caretY])
 
   const finishTest = () => {
     StopTest()
@@ -104,8 +113,8 @@ export default observer(function TypingArea() {
           <>
             <div onClick={() => { inputRef.current?.focus(); }} className="flex relative items-center justify-center h-1/2">
               <input ref={inputRef} className="input absolute opacity-0" type="text" onKeyDown={handleKeyDown} />
+              <div ref={scrollRef} className="flex flex-wrap max-h-[100px] items-center w-full text-2xl overflow-scroll no-scrollbar">
               {!typingStore.loadingPrompt && <Caret/>}
-              <div className="flex flex-wrap items-center w-full">
                 { !typingStore.loadingPrompt ? RenderParagraph() : <LoadingComponent/>}
               </div>
             </div>
