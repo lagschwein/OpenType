@@ -134,12 +134,13 @@ Still WIP so run application in dev mode
 ## Roadmap
 
 - [ ] Refactor everything
-  - [ ] Create MLCEngine in seperate thread so UI isn't blocked
-- [ ] Support for randomly generated test while model download is happening
+  - [X] Create MLCEngine in seperate thread so UI isn't blocked
+- [X] Support for randomly generated test while model download is happening
 - [ ] Pick and choose from lots of themes
 - [ ] Improve stats processing and display
-- [ ] Enter your own prompt to customize the type of tests generated
+- [X] Enter your own prompt to customize the type of tests generated
 - [ ] Support for generating code typing tests
+- [ ] Competitive community with typing races
 
 <!-- CONTRIBUTING -->
 ## Contributing
