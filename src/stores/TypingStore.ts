@@ -47,7 +47,10 @@ export default class TypingStore {
   }
 
   get accuracy(): number {
-    const totalChars = this.typedText.split(" ").length;
+    // replace all spaces with empty string
+    let totalChars = this.typedText.replace(/\s/g, "").length;
+    totalChars = this.typedText.split("").length;
+
     let numErrors = this.errors;
     const correctChars = totalChars - numErrors;
     console.log("Correct Chars: ", correctChars, "Total Chars: ", totalChars);
