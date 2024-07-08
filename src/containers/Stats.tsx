@@ -9,13 +9,14 @@ export default observer(function Stats() {
 
   const { typingStore } = useStore();
   const { ElapsedTime, paragraph, accuracy, errors, wpms, wpmCorrected} = typingStore;
-  const [strokeColor, setStrokeColor] = useState(`hsl(${getComputedStyle(document.documentElement).getPropertyValue('--s')})`)
-  const [strokeColorRaw, setStrokeColorRaw] = useState(`hsl(${getComputedStyle(document.documentElement).getPropertyValue('--s')})`)
+  const [strokeColor, setStrokeColor] = useState(`hsl(${getComputedStyle(document.documentElement).getPropertyValue('--secondary')})`)
+  const [strokeColorRaw, setStrokeColorRaw] = useState(`hsl(${getComputedStyle(document.documentElement).getPropertyValue('--secondary/200')})`)
   const [inlineAccuracy, setInlineAccuracy] = useState(100)
 
   useEffect(() => {
     setInlineAccuracy(accuracy) 
     setStrokeColor(daisyuiColors['dark'].secondary)
+    setStrokeColorRaw(daisyuiColors['dark'].primary)
   }, [])
 
   const calculateWPM = () => {
@@ -63,7 +64,7 @@ export default observer(function Stats() {
           <XAxis tickLine={false}/>
           <YAxis tickLine={false}/>
           <Line type="monotone" dataKey="wpm" stroke={strokeColor}/>
-          <Line type="monotone" dataKey="raw" stroke={strokeColor}/>
+          <Line type="monotone" dataKey="raw" stroke={strokeColorRaw}/>
         </LineChart>
       </div>
     </>
