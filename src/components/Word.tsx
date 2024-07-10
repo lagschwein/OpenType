@@ -23,7 +23,7 @@ const Letter = memo(observer(({l, id, correct}: LetterProps)  => {
 interface WordProps {
   letters: string
   id: string | undefined
-  typedWord: string | null
+  typedWord: string 
   active: boolean
 }
 
@@ -33,19 +33,24 @@ export default memo(observer(function Word(props: WordProps)
   const { typingStore } = useStore()
   const {updateWpmCorrected, updateWpms, setError} = typingStore
 
+  // Check Errors in word
   useEffect(() => {
-    if(!props.typedWord && props.typedWord === ""){
+    // If word is still active set error false
+    if(!props.typedWord && props.typedWord === "" || props.active){
       setWordError(false)
       return
     }
     checkErrors()
   },[props.active])
 
+  // Check Errors in letters
   useEffect(() => {
-    props.letters.split("").map((l, index) => {
-      if(!props.typedWord) return
-      const typedLetter = props.typedWord[index]
-      if (typedLetter && !isLetterCorrect(l, typedLetter)) setError(typingStore.errors + 1)   
+    props.typedWord?.split("").map((l, index) => {
+      const correctLetter = props.letters[index]
+      if(!isLetterCorrect(correctLetter, l))
+      {
+        setError(typingStore.errors + 1)
+      }
     })
   }, [props.typedWord])
 

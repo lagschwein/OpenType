@@ -17,6 +17,7 @@ export default class TypingStore {
   startTest: boolean = false;
   timer: StopWatch = new StopWatch();
   errors: number = 0;
+  incorrectChars: number[] = [];
   wpms: number[] = [];
   wpmCorrected: number[] = [];
   loadingEngine: boolean = false;
