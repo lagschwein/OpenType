@@ -35,8 +35,9 @@ export default observer(function Stats() {
   
   return (
     <>
+    <div className="flex flex-col">
       <div className="stats flex relative items-center justify-center w-5/6 h-5/6 m-10">
-        <div className="max-w-[300px]">
+        <div className="max-w-[300px] mr-5">
           <div>
             <div className="text-secondary">
               WPM
@@ -56,9 +57,6 @@ export default observer(function Stats() {
           width={800}
           height={250}
           data={getGraphData()}
-          margin={{
-            top: 5, right: 30, left: 20, bottom: 5,
-          }}
         >
           <CartesianGrid strokeDasharray="3 3"/>
           <XAxis tickLine={false}/>
@@ -67,6 +65,17 @@ export default observer(function Stats() {
           <Line type="monotone" dataKey="raw" stroke={strokeColorRaw}/>
         </LineChart>
       </div>
+      <div className="flex flex-row items-center justify-center">
+        <div className="text-primary text-3xl">
+        </div>
+        <div className="text-secondary mr-10">
+          Raw 
+        </div> 
+        <div>
+          correctChars/IncorrectChars/Errors
+        </div>
+      </div>
+    </div>
     </>
   )
 })
