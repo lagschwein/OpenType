@@ -140,6 +140,7 @@ Still WIP so run application in dev mode
 - [ ] Improve stats processing and display
 - [X] Enter your own prompt to customize the type of tests generated
 - [ ] Support for generating code typing tests
+- [ ] Game mode for competing against other users in type races
 - [ ] Competitive community with typing races
 
 <!-- CONTRIBUTING -->
