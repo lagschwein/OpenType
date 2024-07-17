@@ -54,7 +54,7 @@
 - [About The Project](#about-the-project)
   - [Built With](#built-with)
 - [Getting Started](#getting-started)
-  - [Prerequesets](#prerequesets)
+  - [Prerequisites](#prerequesets)
   - [Installation](#installation)
 - [Usage](#usage)
 - [Roadmap](#roadmap)
@@ -69,7 +69,7 @@
 
 🚧 OpenType is currently a WIP
 
-OpenType is a minimalist typing test with ai generated tests. It takes alot of inspiration from [monkeytype](https://monkeytype.com).
+OpenType is a minimalist typing test with ai generated tests. It takes a lot of inspiration from [monkeytype](https://monkeytype.com).
 
 Currently it is very slow and uses webgpu to accelerate the typing test generation. So, user experience will vary depending on hardware.
 
@@ -88,7 +88,7 @@ Currently it is very slow and uses webgpu to accelerate the typing test generati
 
 Still WIP so run application in dev mode
 
-### Prerequesets
+### Prerequisites
 
 1. Install tailwindcss
    ```sh
