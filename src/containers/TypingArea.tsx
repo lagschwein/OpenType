@@ -15,6 +15,7 @@ export default observer(function TypingArea() {
   const inputRef = useRef<HTMLInputElement>(null);
   const [showStats, setShowStats] = useState(false)
   const scrollRef = useRef<HTMLDivElement>(null)
+  const [ctrlPress, setCtrlPress] = useState(false)
 
   useEffect(() => {
     inputRef.current?.focus()
@@ -48,15 +49,40 @@ export default observer(function TypingArea() {
     setShowStats(true)
   }
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyUp = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key == "Control")
+    {
+      setCtrlPress(false)
+    }
+  }
 
+  // Main Keyboard event handling
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Backspace") {
       if (currentLetterIndex > 0) {
-        updateCurrentLetterIndex(currentLetterIndex - 1)
-        updateTypedText(typedText.slice(0, -1))
+        if(ctrlPress)
+        {
+          updateCurrentLetterIndex(0)
+          updateTypedText(typedText.slice(0, -currentLetterIndex))
+        }
+        else
+        {
+          updateCurrentLetterIndex(currentLetterIndex - 1)
+          updateTypedText(typedText.slice(0, -1))
+        }
       }
-      else {
-        if (currentWordIndex > 0) {
+      else if(currentWordIndex > 0) {
+        if(ctrlPress)
+        {
+          // Check if the previous word has an error
+          if (!document.getElementById(`${currentWordIndex - 1}`)?.classList.contains("error")) return;
+          updateCurrentWordIndex(currentWordIndex - 1)
+          let previousWord = typedText.split(" ")[currentWordIndex-1]
+          updateCurrentLetterIndex(0)
+          updateTypedText(typedText.slice(0, -previousWord.length-1))
+        }
+        else
+        {
           // Check if the previous word has an error
           if (!document.getElementById(`${currentWordIndex - 1}`)?.classList.contains("error")) return;
           updateCurrentWordIndex(currentWordIndex - 1)
@@ -77,6 +103,7 @@ export default observer(function TypingArea() {
     else if (e.key === "Shift") {
     }
     else if (e.key === "Control") {
+      setCtrlPress(true)
     }
     else if (standardKeys.includes(e.key)) {
       if (!startTest) {
@@ -86,6 +113,7 @@ export default observer(function TypingArea() {
       updateCurrentLetterIndex(currentLetterIndex + 1)
     }
   }
+
 
   const handleNewTest = () => {
     StopTest()
@@ -112,7 +140,7 @@ export default observer(function TypingArea() {
           <Stats /> :
           <>
             <div onClick={() => { inputRef.current?.focus(); }} className="flex relative items-center justify-center h-1/2">
-              <input ref={inputRef} className="input absolute opacity-0" type="text" onKeyDown={handleKeyDown} />
+              <input ref={inputRef} className="input absolute opacity-0" type="text" onKeyDown={handleKeyDown} onKeyUp={handleKeyUp}/>
               <div ref={scrollRef} className="flex flex-wrap max-h-[100px] items-center w-full text-2xl overflow-scroll no-scrollbar">
               {!typingStore.loadingPrompt && <Caret/>}
                 { !typingStore.loadingPrompt ? RenderParagraph() : <LoadingComponent/>}

@@ -19,15 +19,9 @@ export default observer(function Test() {
 
   return (
     <div className="grid grid-row-3 h-screen justify-items-center">
-      {typingStore.startTest ? <></> :
-        <>
-          <NavBar />
-        </>
-      }
+      <NavBar />
       <TypingArea />
-      {typingStore.startTest ? <></> :
       <Footer />
-      }
     </div>
   )
 })
