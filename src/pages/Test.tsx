@@ -18,7 +18,7 @@ export default observer(function Test() {
   if (typingStore.loadingEngine) { return <div className="flex items-center justify-center h-screen"><LoadingComponent /></div> }
 
   return (
-    <div className="grid grid-row-3 h-screen justify-items-center">
+    <div >
       <NavBar />
       <TypingArea />
       <Footer />
