@@ -18,10 +18,10 @@ export default observer(function Test() {
   if (typingStore.loadingEngine) { return <div className="flex items-center justify-center h-screen"><LoadingComponent /></div> }
 
   return (
-    <div >
-      <NavBar />
-      <TypingArea />
-      <Footer />
+    <div className="grid grid-rows-6 h-screen px-6">
+      <NavBar className="row-span-1" />
+      <TypingArea className="row-span-4" />
+      <Footer className="row-span-1" />
     </div>
   )
 })

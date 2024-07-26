@@ -5,8 +5,7 @@ export default function NotSupported() {
       <div>
        <h1 className="text-3xl">This browser does not support WebGpu</h1>
       </div>
-      <h2 className="text-2xl">Please use a supporter browser</h2>
-      <a href="https://github.com/gpuweb/gpuweb/wiki/Implementation-Status"><p>supported browsers</p></a>
+      <a href="https://github.com/gpuweb/gpuweb/wiki/Implementation-Status"><h2 className="text-2xl">Please use a supported browser</h2></a>
     </div>
     </>
   )

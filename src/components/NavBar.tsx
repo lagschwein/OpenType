@@ -2,12 +2,16 @@ import { observer } from "mobx-react-lite";
 import { useStore } from "../stores/store";
 import { AnimatePresence, motion } from "framer-motion";
 
-export default observer(function NavBar() {
+interface NavBarProps {
+  className?: string;
+}
+
+export default observer(function NavBar(props: NavBarProps) {
   const { typingStore } = useStore();
 
   return (
-    <div className="flex flex-row justify-between items-center w-3/4">
-      <div className="columns-auto">
+    <div className={props.className + " flex justify-between items-start p-6"}>
+      <div>
         <a className="btn btn-ghost text-xl ">OpenType</a>
       </div>
 
@@ -18,7 +22,7 @@ export default observer(function NavBar() {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
       >
-        <div className="flex col-span-2 bg-base-100 justify-end">
+        <div className="flex bg-base-100 ">
           <div className="">
             <label className="label cursor-pointer space-x-2">
               <span className="label-text">AI</span>

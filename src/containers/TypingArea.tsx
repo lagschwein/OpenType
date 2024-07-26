@@ -7,9 +7,11 @@ import standardKeys from "../util/keys";
 import Caret from "../components/Caret";
 import LoadingComponent from "../components/LoadingComponent";
 
-// Loading animation
+interface TypingAreaProps {
+  className?: string;
+}
 
-export default observer(function TypingArea() {
+export default observer(function TypingArea(props: TypingAreaProps) {
   const { typingStore } = useStore();
   var { typedText, updateTypedText, paragraph, currentLetterIndex, updateCurrentLetterIndex, currentWordIndex, updateCurrentWordIndex, StartTest, StopTest, startTest, setFlashing } = typingStore;
   const inputRef = useRef<HTMLInputElement>(null);
@@ -40,7 +42,8 @@ export default observer(function TypingArea() {
     if (typingStore.caretY > -2) {
       const element = document.getElementById(`${currentWordIndex-1}`)?? document.getElementById(`${currentWordIndex}`)
       if(!element) return
-      scrollRef.current?.scrollBy({top: element.offsetHeight+8, behavior: "smooth"})
+      element.scrollIntoView() 
+      // scrollRef.current?.scrollBy({top: element.offsetHeight+8})
     }
   }, [typingStore.caretY])
 
@@ -134,24 +137,20 @@ export default observer(function TypingArea() {
 
 
   return (
-    <>
-      <div id="InputWrapper" className="flex flex-col items-center justify-center h-full w-3/4">
-        {showStats ?
-          <Stats /> :
-          <>
-            <div onClick={() => { inputRef.current?.focus(); }} className="flex relative items-center justify-center h-1/2">
-              <input ref={inputRef} className="input absolute opacity-0" type="text" onKeyDown={handleKeyDown} onKeyUp={handleKeyUp}/>
-              <div ref={scrollRef} className="flex flex-wrap max-h-[100px] items-center w-full text-2xl overflow-scroll no-scrollbar">
-              {!typingStore.loadingPrompt && <Caret/>}
-                { !typingStore.loadingPrompt ? RenderParagraph() : <LoadingComponent/>}
-              </div>
-            </div>
-          </>
-        }
-        <button onClick={handleNewTest} className="btn btn-ghost btn-circle btn-xs sm:btn-sm md:btn-md lg:btn-lg bottom-32 mt-4">
-          <svg width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z" />  <path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -5v5h5" />  <path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 5v-5h-5" /></svg>
-        </button>
-      </div>
-    </>
+    <div id="InputWrapper" className={props.className + " flex flex-col items-center justify-center h-full p-6"}>
+      {showStats ?
+        <Stats /> :
+        <div onClick={() => { inputRef.current?.focus(); }} className="flex items-center justify-center h-1/2">
+          <input ref={inputRef} className="input absolute opacity-0" type="text" onKeyDown={handleKeyDown} onKeyUp={handleKeyUp}/>
+          <div ref={scrollRef} className="flex flex-wrap max-h-[100px]  w-full text-2xl overflow-scroll no-scrollbar">
+          {!typingStore.loadingPrompt && <Caret/>}
+            { !typingStore.loadingPrompt ? RenderParagraph() : <LoadingComponent/>}
+          </div>
+        </div>
+      }
+      <button onClick={handleNewTest} className="btn btn-ghost btn-circle btn-xs sm:btn-sm md:btn-md lg:btn-lg bottom-32 mt-4">
+        <svg width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z" />  <path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -5v5h5" />  <path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 5v-5h-5" /></svg>
+      </button>
+    </div>
   )
 })
