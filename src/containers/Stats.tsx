@@ -1,6 +1,6 @@
 import { observer } from "mobx-react-lite";
 import { useStore } from "../stores/store";
-import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
+import { CartesianGrid, Label, Line, LineChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 import { useEffect, useState } from "react";
 import daisyuiColors from 'daisyui/src/theming/themes';
 
@@ -34,10 +34,9 @@ export default observer(function Stats() {
   }
   
   return (
-    <>
-    <div className="flex flex-col">
-      <div className="stats flex relative items-center justify-center w-5/6 h-5/6 m-10">
-        <div className="max-w-[300px] mr-5">
+    <div className="flex h-1/2 flex-col">
+      <div className="flex items-center justify-center max-w-full">
+        <div className="max-w-full">
           <div>
             <div className="text-secondary">
               WPM
@@ -53,17 +52,21 @@ export default observer(function Stats() {
             </div>
           </div>
         </div>
-        <LineChart
-          width={800}
-          height={250}
-          data={getGraphData()}
-        >
-          <CartesianGrid strokeDasharray="3 3"/>
-          <XAxis tickLine={false}/>
-          <YAxis tickLine={false}/>
-          <Line type="monotone" dataKey="wpm" stroke={strokeColor}/>
-          <Line type="monotone" dataKey="raw" stroke={strokeColorRaw}/>
-        </LineChart>
+        <div className="h-full w-3/4">
+          {/* <ResponsiveContainer>  */}
+            <LineChart
+              data={getGraphData()}
+              width={800}
+              height={400}
+            >
+              <CartesianGrid strokeDasharray="3 3"/>
+              <XAxis tickLine={true}/>
+              <YAxis tickLine={true} label={{ value: "Wpm", angle: -90, position: 'insideLeft'}}/>
+              <Line type="monotone" dataKey="wpm" stroke={strokeColor}/>
+              <Line type="monotone" dataKey="raw" stroke={strokeColorRaw}/>
+            </LineChart>
+          {/* </ResponsiveContainer> */}
+        </div>
       </div>
       <div className="flex flex-row items-center justify-center">
         <div className="text-primary text-3xl">
@@ -76,6 +79,5 @@ export default observer(function Stats() {
         </div>
       </div>
     </div>
-    </>
   )
 })
