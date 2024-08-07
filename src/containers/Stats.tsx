@@ -34,25 +34,23 @@ export default observer(function Stats() {
   }
   
   return (
-    <div className="flex h-1/2 flex-col">
-      <div className="flex items-center justify-center max-w-full">
-        <div className="max-w-full">
-          <div>
-            <div className="text-secondary">
-              WPM
-            </div>
-            <div className="text-6xl text-primary">
-              {calculateWPM()}
-            </div>
-            <div className="text-secondary">
-              Accuracy
-            </div>
-            <div className="text-6xl text-primary">
-              {inlineAccuracy}%
-            </div>
+    <div className="flex h-1/2">
+      <div className="flex flex-col justify-center ">
+          <div className="text-secondary">
+            WPM
           </div>
-        </div>
-        <div className="h-full w-3/4">
+          <div className="text-6xl text-primary">
+            {typingStore.currentWpmCorrected}
+          </div>
+          <div className="text-secondary">
+            Accuracy
+          </div>
+          <div className="text-6xl text-primary">
+            {inlineAccuracy}%
+          </div>
+      </div>
+      <div className="flex items-center justify-center max-w-full">
+        <div className="h-full">
           {/* <ResponsiveContainer>  */}
             <LineChart
               data={getGraphData()}
@@ -66,16 +64,14 @@ export default observer(function Stats() {
               <Line type="monotone" dataKey="raw" stroke={strokeColorRaw}/>
             </LineChart>
           {/* </ResponsiveContainer> */}
-        </div>
-      </div>
-      <div className="flex flex-row items-center justify-center">
-        <div className="text-primary text-3xl">
-        </div>
-        <div className="text-secondary mr-10">
-          Raw 
-        </div> 
-        <div>
-          correctChars/IncorrectChars/Errors
+          <div className="flex flex-row items-center justify-center">
+            <div className="text-primary text-3xl mr-10">
+              {typingStore.currentWpm}
+            </div> 
+            <div className="text-2xl">
+              {typingStore.typedText.length}/{typingStore.paragraph.length}/{typingStore.errors}
+            </div>
+          </div>
         </div>
       </div>
     </div>

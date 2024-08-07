@@ -2729,6 +2729,10 @@ details.collapse summary::-webkit-details-marker {
   margin-top: 1rem;
 }
 
+.mr-3 {
+  margin-right: 0.75rem;
+}
+
 .block {
   display: block;
 }
