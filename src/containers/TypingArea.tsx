@@ -28,6 +28,7 @@ export default observer(function TypingArea(props: TypingAreaProps) {
     }
   }, [typedText, paragraph])
 
+  // Stop flashing caret when test starts
   useEffect(() => {
     if (startTest) {
       setFlashing(false)

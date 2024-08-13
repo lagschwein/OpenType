@@ -1,7 +1,5 @@
 import { observer } from "mobx-react-lite";
 import { useStore } from "../stores/store";
-import { CartesianGrid, Label, Line, LineChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
-import { useEffect, useState } from "react";
 import StatsGraph from "../components/StatsGraph";
 
 
@@ -60,7 +58,7 @@ export default observer(function Stats() {
 
   function MoreStats(props: MoreStatsProps) {
     return (
-      <div className={"flex flex-row items-center " + props.className}>
+      <div className={"flex flex-row items-center" + props.className}>
         <div className="text-primary text-3xl m-5">
           {/* {typingStore.currentWpm} */}
           70
@@ -73,7 +71,7 @@ export default observer(function Stats() {
   }
 
   return (
-    <div className="grid grid-cols-5">
+    <div className="grid grid-cols-5 min-h-[418px]">
       <MainStats className="col-span-1"/>
       <StatsGraph className="col-span-4" /*data={getGraphData()}*/ />
       <MoreStats className="col-span-5"/>

@@ -27,6 +27,7 @@ interface WordProps {
   active: boolean
 }
 
+// Memoisation of Word component to prevent re-rendering of all words when sibling components change
 export default memo(observer(function Word(props: WordProps) 
 {
   const [wordError, setWordError] = useState(false)

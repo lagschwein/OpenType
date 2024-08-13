@@ -16,35 +16,19 @@ export default class TypingStore {
   currentLetterIndex: number = 0;
   startTest: boolean = false;
   timer: StopWatch = new StopWatch();
+  loadingPrompt: boolean = false;
+  caretX: number = 0
+  caretY: number = 0
+
+  // Stats
+  testTime: number = 0;
   errors: number = 0;
   incorrectChars: number[] = [];
   wpms: number[] = [];
   wpmCorrected: number[] = [];
-  loadingEngine: boolean = false;
-  loadingPrompt: boolean = false;
-  ai: boolean = false;
-  engine: WebWorkerMLCEngine | null = null;
-  selectedModel: string = "Qwen2-0.5B-Instruct-q0f16-MLC";
-  // selectedModel: string = "Llama-3-8B-Instruct-q4f32_1-MLC"
-  userPrompt: string = ""
-  caretX: number = 0
-  caretY: number = 0
-
-  // caret flashing animation
-  flashing: boolean = true;
 
   constructor() {
     makeAutoObservable(this);
-  }
-
-  // Caret
-  setCaretX = (x: number) => {
-    this.caretX = x;
-  }
-
-  setCaretY = (y: number) => {
-    console.log("Setting Y: ", y)
-    this.caretY = y;
   }
 
   get accuracy(): number {
@@ -57,6 +41,72 @@ export default class TypingStore {
     console.log("Correct Chars: ", correctChars, "Total Chars: ", totalChars);
     return Math.round((correctChars / totalChars) * 100);
   }
+
+  get currentWpm() {
+    const totalChars = this.typedText.replace(/\s/g, "").length;
+    const totalWords = totalChars / 5;
+    return Math.round(totalWords / ((this.ElapsedTime() / 1000) / 60));
+  }
+
+  get currentWpmCorrected() {
+    console.log(`Accuracy: ${this.accuracy}`)
+    return this.currentWpm * (this.accuracy / 100);
+  }
+
+  reset = () => {
+    this.updateTypedText("");
+    this.updateCurrentLetterIndex(0);
+    this.updateCurrentWordIndex(0);
+    this.setError(0);
+    this.resetWpms();
+    this.resetWpmCorrected();
+  };
+
+  setError = (i: number) => {
+    this.errors = i;
+  };
+
+  updateWpms = (index: number) => {
+    this.wpms[index] = this.currentWpm;
+  };
+
+  resetWpms = () => {
+    this.wpms = [];
+  };
+
+  updateWpmCorrected = (index: number) => {
+    this.wpmCorrected[index] = this.currentWpmCorrected;
+  };
+
+  resetWpmCorrected = () => {
+    this.wpmCorrected = [];
+  };
+
+
+
+
+  // Caret
+
+  // caret flashing animation
+  flashing: boolean = true;
+
+  setCaretX = (x: number) => {
+    this.caretX = x;
+  }
+
+  setCaretY = (y: number) => {
+    console.log("Setting Y: ", y)
+    this.caretY = y;
+  }
+
+
+  // AI
+  ai: boolean = false;
+  loadingEngine: boolean = false;
+  engine: WebWorkerMLCEngine | null = null;
+  selectedModel: string = "Qwen2-0.5B-Instruct-q0f16-MLC";
+  // selectedModel: string = "Llama-3-8B-Instruct-q4f32_1-MLC"
+  userPrompt: string = ""
 
   loadEngine = async (
     selectedModel: string = this.selectedModel,
@@ -81,14 +131,6 @@ export default class TypingStore {
     }
   };
 
-  reset = () => {
-    this.updateTypedText("");
-    this.updateCurrentLetterIndex(0);
-    this.updateCurrentWordIndex(0);
-    this.setError(0);
-    this.resetWpms();
-    this.resetWpmCorrected();
-  };
 
   setAI = (ai: boolean) => {
     this.ai = ai;
@@ -148,17 +190,6 @@ export default class TypingStore {
     }
   }
 
-  get currentWpm() {
-    const totalChars = this.typedText.replace(/\s/g, "").length;
-    const totalWords = totalChars / 5;
-    return Math.round(totalWords / ((this.ElapsedTime() / 1000) / 60));
-  }
-
-  get currentWpmCorrected() {
-    console.log(`Accuracy: ${this.accuracy}`)
-    return this.currentWpm * (this.accuracy / 100);
-  }
-
   setLoadingEngine = (loading: boolean) => {
     this.loadingEngine = loading;
   };
@@ -170,27 +201,6 @@ export default class TypingStore {
   setEngine = (engine: WebWorkerMLCEngine) => {
     this.engine = engine;
   };
-
-  setError = (i: number) => {
-    this.errors = i;
-  };
-
-  updateWpms = (index: number) => {
-    this.wpms[index] = this.currentWpm;
-  };
-
-  resetWpms = () => {
-    this.wpms = [];
-  };
-
-  updateWpmCorrected = (index: number) => {
-    this.wpmCorrected[index] = this.currentWpmCorrected;
-  };
-
-  resetWpmCorrected = () => {
-    this.wpmCorrected = [];
-  };
-
   updateTypedText = (text: string) => {
     this.typedText = text;
   };
@@ -214,6 +224,7 @@ export default class TypingStore {
 
   StopTest = () => {
     this.timer.stop();
+    this.testTime = this.ElapsedTime(); 
     this.startTest = false;
   };
 

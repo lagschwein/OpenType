@@ -2737,10 +2737,6 @@ details.collapse summary::-webkit-details-marker {
   margin: 1.25rem;
 }
 
-.ml-5 {
-  margin-left: 1.25rem;
-}
-
 .mr-10 {
   margin-right: 2.5rem;
 }
@@ -2787,6 +2783,10 @@ details.collapse summary::-webkit-details-marker {
 
 .max-h-\[100px\] {
   max-height: 100px;
+}
+
+.min-h-\[418px\] {
+  min-height: 418px;
 }
 
 .w-1\/2 {
