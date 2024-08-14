@@ -14,7 +14,7 @@ export default observer(function Stats() {
     const totalWords = totalChars / 5;
     return Math.round(totalWords / ((ElapsedTime() / 1000) / 60))
   }
-
+  
   const getGraphData = () => {
     let data = []
     for (let i = 1; i < wpms.length; i++) {
@@ -31,21 +31,19 @@ export default observer(function Stats() {
     return (
       <div className={"flex md:flex-col mr-10 "+ props.className}>
         <div className="sm:m-5">
-          <div className="">
+          <div className="font-semibold">
             WPM
           </div>
           <div className="text-4xl text-primary">
-            {/* {typingStore.currentWpmCorrected} */}
-            70
+            {Math.floor(typingStore.currentWpmCorrected)}
           </div>
         </div>
         <div className="sm:m-5">
-          <div className="">
+          <div className="font-semibold">
             Accuracy
           </div>
           <div className="text-4xl text-primary">
-            {/* {inlineAccuracy}% */}
-            100%
+            {accuracy}%
           </div>
         </div>
       </div>
@@ -58,22 +56,28 @@ export default observer(function Stats() {
 
   function MoreStats(props: MoreStatsProps) {
     return (
-      <div className={"flex flex-row items-center" + props.className}>
-        <div className="text-primary text-3xl m-5">
-          {/* {typingStore.currentWpm} */}
-          70
-        </div>
-        <div className="text-2xl m-5">
-          {typingStore.typedText.length}/{typingStore.paragraph.length}/{typingStore.errors}
-        </div>
+      <>
+      <div className={"grid grid-cols-2 grid-flow-row items-center" + props.className}>
+          <div className="text-2xl col-span-2 m-5">
+            {Math.floor(ElapsedTime()/1000/60).toString().padStart(2, '0')}:{Math.floor(ElapsedTime()/1000%60).toString().padStart(2, '0')}
+          </div>
+          <div className="text-3xl m-5">
+            <p className="font-semibold text-sm text-neutral">Raw</p>
+            {typingStore.currentWpm}
+          </div>
+          <div className="text-2xl m-5">
+            <p className="font-semibold text-sm text-neutral">c/w/e/m</p>
+            {typingStore.correctChars}/{typingStore.wrongChars}/{typingStore.extraChars}/{typingStore.missingChars}
+          </div>
       </div>
+      </>
     )
   }
 
   return (
     <div className="grid grid-cols-5 min-h-[418px]">
       <MainStats className="col-span-1"/>
-      <StatsGraph className="col-span-4" /*data={getGraphData()}*/ />
+      <StatsGraph className="col-span-4" data={getGraphData()} />
       <MoreStats className="col-span-5"/>
     </div>
   )

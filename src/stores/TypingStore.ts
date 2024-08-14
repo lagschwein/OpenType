@@ -20,26 +20,60 @@ export default class TypingStore {
   caretX: number = 0
   caretY: number = 0
 
-  // Stats
-  testTime: number = 0;
-  errors: number = 0;
-  incorrectChars: number[] = [];
-  wpms: number[] = [];
-  wpmCorrected: number[] = [];
-
   constructor() {
     makeAutoObservable(this);
   }
 
-  get accuracy(): number {
-    // replace all spaces with empty string
-    let totalChars = this.typedText.replace(/\s/g, "").length;
-    totalChars = this.typedText.split("").length;
+  // Stats
+  errors: number = 0;
+  incorrectChars: number[] = [];
+  wpms: number[] = [];
+  wpmCorrected: number[] = [];
+  correctChars: number = 0;
+  extraChars: number = 0;
+  wrongChars: number = 0;
+  missingChars: number = 0;
 
-    let numErrors = this.errors;
-    const correctChars = totalChars - numErrors;
-    console.log("Correct Chars: ", correctChars, "Total Chars: ", totalChars);
-    return Math.round((correctChars / totalChars) * 100);
+  calculateErrors = () => {
+    // Reset errors
+    this.extraChars = 0;
+    this.correctChars = 0;
+    this.wrongChars = 0;
+    this.missingChars = 0;
+    // Iterate through each word of the typed text and compare it to the paragraph
+    const typedWords = this.typedText.trim().split(" ");
+    const correctWords = this.paragraph.split(" ");
+    console.log(typedWords)
+    console.log(correctWords)
+    let errors = 0;
+
+    for (let i = 0; i < typedWords.length; i++) {
+      const typedWord = typedWords[i];
+      const correctWord = correctWords[i];
+      // Loop through each letter of the word and compare it to the correct word 
+      for (let j = 0; j < typedWord.length; j++) {
+        if (j > correctWord.length) {
+          this.extraChars++; 
+        }
+        else{
+          if (typedWord[j] !== correctWord[j]) {
+            this.wrongChars++;
+          }
+          else{
+            this.correctChars++;
+          }
+        }
+      }
+
+      this.missingChars += Math.max(0, correctWord.length - typedWord.length)
+    }
+
+    return errors;
+  }
+
+  get accuracy(): number {
+    this.calculateErrors()
+    return Math.round((this.correctChars /(this.correctChars + this.errors)) * 100);
   }
 
   get currentWpm() {
@@ -49,7 +83,6 @@ export default class TypingStore {
   }
 
   get currentWpmCorrected() {
-    console.log(`Accuracy: ${this.accuracy}`)
     return this.currentWpm * (this.accuracy / 100);
   }
 
@@ -224,7 +257,7 @@ export default class TypingStore {
 
   StopTest = () => {
     this.timer.stop();
-    this.testTime = this.ElapsedTime(); 
+    this.calculateErrors();
     this.startTest = false;
   };
 

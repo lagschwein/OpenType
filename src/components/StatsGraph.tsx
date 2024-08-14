@@ -17,7 +17,6 @@ export default observer(function StatsGraph(props: StatsGraphProps) {
     setStrokeColorRaw(daisyuiColors['dark'].primary)
   }, [])
 
-  const dummyData = [{ wpm: 0, raw: 0 }, { wpm: 10, raw: 10 }, { wpm: 20, raw: 20 }, { wpm: 30, raw: 30 }, { wpm: 40, raw: 40 }, { wpm: 50, raw: 50 }, { wpm: 60, raw: 60 }, { wpm: 70, raw: 70 }, { wpm: 80, raw: 80 }, { wpm: 90, raw: 90 }, { wpm: 100, raw: 100 }]
 
   return (
     <ResponsiveContainer
@@ -27,7 +26,7 @@ export default observer(function StatsGraph(props: StatsGraphProps) {
     >
       <LineChart
         // data={props.data}
-        data={dummyData}
+        data={props.data}
       >
         <CartesianGrid  />
         <XAxis tickLine={true} />

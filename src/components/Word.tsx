@@ -60,7 +60,6 @@ export default memo(observer(function Word(props: WordProps)
     updateWpms(typingStore.currentWordIndex)
     updateWpmCorrected(typingStore.currentWordIndex)
     if (props.typedWord !== props.letters){
-      setError(typingStore.errors + 1)
       setWordError(true)
     }
     else
