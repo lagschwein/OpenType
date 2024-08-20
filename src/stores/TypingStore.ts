@@ -34,12 +34,23 @@ export default class TypingStore {
   wrongChars: number = 0;
   missingChars: number = 0;
 
+  setExtraChars = (i: number) => {
+    this.extraChars = i;
+  }
+
+  setCorrectChars = (i: number) => {
+    this.correctChars = i;
+  }
+
+  setWrongChars = (i: number) => {
+    this.wrongChars = i;
+  }
+
+  setMissingChars = (i: number) => {
+    this.missingChars = i;
+  }
+
   calculateErrors = () => {
-    // Reset errors
-    this.extraChars = 0;
-    this.correctChars = 0;
-    this.wrongChars = 0;
-    this.missingChars = 0;
     // Iterate through each word of the typed text and compare it to the paragraph
     const typedWords = this.typedText.trim().split(" ");
     const correctWords = this.paragraph.split(" ");
@@ -72,7 +83,6 @@ export default class TypingStore {
   }
 
   get accuracy(): number {
-    this.calculateErrors()
     return Math.round((this.correctChars /(this.correctChars + this.errors)) * 100);
   }
 
@@ -93,6 +103,11 @@ export default class TypingStore {
     this.setError(0);
     this.resetWpms();
     this.resetWpmCorrected();
+    // Reset errors
+    this.setExtraChars(0);
+    this.setCorrectChars(0);
+    this.setWrongChars(0);
+    this.setMissingChars(0);
   };
 
   setError = (i: number) => {
@@ -260,6 +275,7 @@ export default class TypingStore {
     this.calculateErrors();
     this.startTest = false;
   };
+
 
   public ElapsedTime = () => {
     return this.timer.getElapsedTime();
